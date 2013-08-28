@@ -1,10 +1,8 @@
-#include <opencv2/core/core.hpp>
-#include <cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <iostream>
+#include "main.hh"
 
 using namespace cv;
 using namespace std;
+using namespace Pretrt;
 
 int
 main (int argc,
@@ -12,36 +10,38 @@ main (int argc,
 {
     if (argc != 2)
     {
-	cerr << "USAGE : [TirfZipCode] [picture.extension]" << endl;
-	return -1;
+	cerr << "USAGE : [TirfBarCode] [picture.extension]" << endl;
+	return EXIT_FAILURE;
     }
 
+    const char name_in[] = "Source Picture";
+    const char name_out[] = "Output Picture";
+
     Mat in;
-    Mat out;
     in = imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
-    out = in;
 
     if (!in.data)
     {
 	cerr << "Cannot open or find image " << argv[1] << endl;
-	return -1;
+	return EXIT_FAILURE;
     }
 
-    cvtColor(in, out, CV_BGR2GRAY);
-    imwrite("out.jpg", out);
+    Mat out = binarize(blackHat(color2Gray(in)));
+    //Mat out = blackHat(color2Gray(in));
 
-    namedWindow("Source Picture", CV_WINDOW_AUTOSIZE);
-    cvMoveWindow("Source Picture", 100, 100);
-    imshow("Source Picture", in);
+    namedWindow(name_in, CV_WINDOW_AUTOSIZE);
+    cvMoveWindow(name_in, 100, 100);
+    imshow(name_in, in);
 
-    namedWindow("Output Picture", CV_WINDOW_AUTOSIZE);
-    cvMoveWindow("Output Picture", 800, 100);
-    imshow("Output Picture", out);
+    namedWindow(name_out, CV_WINDOW_AUTOSIZE);
+    cvMoveWindow(name_out, 800, 100);
+    imshow(name_out, out);
 
     waitKey(0);
 
-    destroyWindow("Source Picture");
-    destroyWindow("Output Picture");
+
+    destroyWindow(name_in);
+    destroyWindow(name_out);
 
     return EXIT_SUCCESS;
 }
