@@ -3,6 +3,7 @@
 using namespace cv;
 using namespace std;
 using namespace Pretrt;
+using namespace Trt;
 
 int
 main (int argc,
@@ -15,7 +16,8 @@ main (int argc,
     }
 
     const char name_in[] = "Source Picture";
-    const char name_out[] = "Output Picture";
+    const char name_out[] = "Pretrt Picture";
+    const char name_trt[] = "Trt Picture";
 
     Mat in;
     in = imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
@@ -28,20 +30,26 @@ main (int argc,
 
     Mat out = binarize(blackHat(color2Gray(in)));
     //Mat out = blackHat(color2Gray(in));
+    Mat res = Trt::contours(out);
 
     namedWindow(name_in, CV_WINDOW_AUTOSIZE);
     cvMoveWindow(name_in, 100, 100);
     imshow(name_in, in);
 
     namedWindow(name_out, CV_WINDOW_AUTOSIZE);
-    cvMoveWindow(name_out, 800, 100);
+    cvMoveWindow(name_out, 450, 100);
     imshow(name_out, out);
+
+    namedWindow(name_trt, CV_WINDOW_AUTOSIZE);
+    cvMoveWindow(name_trt, 800, 100);
+    imshow(name_trt, res);
 
     waitKey(0);
 
 
     destroyWindow(name_in);
     destroyWindow(name_out);
+    destroyWindow(name_trt);
 
     return EXIT_SUCCESS;
 }

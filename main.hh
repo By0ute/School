@@ -7,7 +7,7 @@
 # include <iostream>
 
 # include "Pretrt.hh"
-//# include "Trt.hh"
+# include "Trt.hh"
 //# include "Reco.hh"
 
 #endif //MAIN_HH

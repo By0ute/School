@@ -7,9 +7,9 @@ namespace Pretrt
     {
 	Mat res;
 
-	cvtColor(in, in, CV_BGR2GRAY);
+	cvtColor(in, res, CV_BGR2GRAY);
 
-	equalizeHist(in, res);
+	//equalizeHist(in, res);
 
 	//for (int i = 0; i < in.cols; i++)
 	//{
@@ -36,7 +36,7 @@ namespace Pretrt
 	Mat res;
 
 	Mat element = getStructuringElement(MORPH_RECT,
-					    Size(20,20), Point(-1,-1));
+					    Size(25,25), Point(-1,-1));
 
 	morphologyEx(in, res, MORPH_BLACKHAT, element);
 
@@ -47,7 +47,7 @@ namespace Pretrt
     {
 	Mat res;
 
-	threshold(in, res, 100, 255, THRESH_BINARY);
+	threshold(in, res, 50, 255, THRESH_BINARY);
 
 	return res;
     }
