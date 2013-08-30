@@ -3,7 +3,6 @@
 using namespace cv;
 using namespace std;
 using namespace Pretrt;
-using namespace Trt;
 
 int
 main (int argc,
@@ -30,7 +29,11 @@ main (int argc,
 
     Mat out = binarize(blackHat(color2Gray(in)));
     //Mat out = blackHat(color2Gray(in));
-    Mat res = Trt::contours(out);
+    Trt trt(out);
+    Mat res = trt.contours_bouding();
+    res = trt.contours_bar();
+
+    //trt.print_contours();
 
     namedWindow(name_in, CV_WINDOW_AUTOSIZE);
     cvMoveWindow(name_in, 100, 100);
