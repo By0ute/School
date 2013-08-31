@@ -30,8 +30,10 @@ main (int argc,
     Mat out = binarize(blackHat(color2Gray(in)));
     //Mat out = blackHat(color2Gray(in));
     Trt trt(out);
-    Mat res = trt.contours_bouding();
-    res = trt.contours_bar();
+    //trt.axes_bounding();
+    //Mat res = trt.get_mat();
+    //Mat res = trt.contours_bar();
+    Mat res = trt.axes_bounding();
 
     //trt.print_contours();
 
