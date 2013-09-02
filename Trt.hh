@@ -11,6 +11,9 @@
 # include <map>
 # include <math.h>
 # include <sstream>
+
+# include "Axe.hh"
+# include "Box.hh"
 //# include <stdlib>
 
 using namespace cv;
@@ -23,16 +26,14 @@ class Trt
 	    Trt();
 	    Trt(Mat m);
 	    Trt(Mat m, vector<vector <Point> > c,
-		vector<vector<Point> > a,
+		vector<Axe> a,
 		vector<vector<vector<Point> > > f,
-		vector<Rect> b);
+		vector<RotatedRect> r);
 
 	    ~Trt();
 
 	    // Treatment methods
 	    Mat contours_bounding();
-	    vector<vector<Point> > contours_bar(vector<vector<Point> >
-						contours_origin);
 	    Mat axes_bounding();
 	    Mat find_friends();
 
@@ -45,23 +46,23 @@ class Trt
 
 	    void set_mat(Mat m);
 	    void set_contours(vector<vector<Point> > c);
-	    void set_axes(vector<vector<Point> > a);
+	    void set_axes(vector<Axe> a);
 	    void set_friends(vector<vector<vector<Point> > > f);
-	    void set_boundings(vector<Rect> b);
+	    void set_rects(vector<RotatedRect> r);
 
     private:
 	    Mat mat_;
 	    vector<vector<Point> > contours_;
-	    vector<vector<Point> > axes_;
+	    vector<Axe> axes_;
 	    vector<vector<vector<Point> > > friends_;
-	    vector<Rect> boundings_;
+	    vector<RotatedRect> rects_;
 
 };
 
 
-bool points_bar(vector<Point> v);
+Axe points_axe(vector<Point> v);
 
-vector<Point> points_axe(vector<Point> v);
+RotatedRect rect_bar(vector<Point> v);
 
 int distance(Point p1, Point p2);
 
