@@ -34,8 +34,8 @@ main (int argc,
     //Mat res = trt.get_mat();
     //Mat res = trt.contours_bounding();
     //trt.find_friends();
-    Mat res = trt.axes_bounding();
-    //Mat res = trt.find_friends();
+    //Mat res = trt.axes_bounding();
+    Mat res = trt.find_friends();
 
     //trt.print_contours();
 

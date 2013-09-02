@@ -27,7 +27,7 @@ class Trt
 	    Trt(Mat m);
 	    Trt(Mat m, vector<vector <Point> > c,
 		vector<Axe> a,
-		vector<vector<vector<Point> > > f,
+		vector<set<Axe> > f,
 		vector<RotatedRect> r);
 
 	    ~Trt();
@@ -39,6 +39,7 @@ class Trt
 
 	    // utils
 	    void print_contours();
+	    void print_friends();
 
 	    // getters setters
 	    Mat get_mat();
@@ -47,20 +48,22 @@ class Trt
 	    void set_mat(Mat m);
 	    void set_contours(vector<vector<Point> > c);
 	    void set_axes(vector<Axe> a);
-	    void set_friends(vector<vector<vector<Point> > > f);
+	    void set_friends(vector<set<Axe> > f);
 	    void set_rects(vector<RotatedRect> r);
 
     private:
 	    Mat mat_;
 	    vector<vector<Point> > contours_;
 	    vector<Axe> axes_;
-	    vector<vector<vector<Point> > > friends_;
+	    vector<set<Axe> > friends_;
 	    vector<RotatedRect> rects_;
 
 };
 
 
 Axe points_axe(vector<Point> v);
+
+Axe rect_axe(RotatedRect r);
 
 RotatedRect rect_bar(vector<Point> v);
 
@@ -74,7 +77,9 @@ vector<Rect> make_boundings(map<int, vector<Point> > m, vector<Rect> b);
 
 void print_point(Point p, int i);
 
-int parallel_axes(vector<Point> a1, vector<Point> a2);
+void print_axe(Axe a);
+
+int parallel_axes(Axe a1, Axe a2);
 
 
 

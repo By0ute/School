@@ -31,7 +31,7 @@ Trt::Trt(Mat m)
 
 Trt::Trt(Mat m, vector<vector <Point> > c,
 	 vector<Axe> a,
-	 vector<vector<vector<Point> > > f,
+	 vector<set<Axe> > f,
 	 vector<RotatedRect> r)
     : mat_ (m.clone()),
     contours_ (c),
@@ -100,7 +100,7 @@ Trt::set_axes(vector<Axe> a)
 
 // friends_
 void
-Trt::set_friends(vector<vector<vector<Point> > > f)
+Trt::set_friends(vector<set<Axe> > f)
 {
     friends_ = f;
 }
@@ -201,10 +201,16 @@ Trt::axes_bounding()
 
     for (int i = 0; i < contours_.size(); i++)
     {
-	axes.push_back(points_axe(contours_[i]));
+	//axes.push_back(points_axe(contours_[i]));
+	axes.push_back(rect_axe(rects_[i]));
 
-	//rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-		  //color_bounding, 1, 8, 0);
+	Point2f rect_points[4];
+	rects_[i].points(rect_points);
+
+	for (int j = 0; j < 4; j++)
+	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
+		 color_bounding, 1, 8);
+
 	line(mat_res, axes[i].p1_, axes[i].p2_, color_axe, 1, 8, 0);
     }
 
@@ -219,290 +225,69 @@ Trt::axes_bounding()
 /* FIND_FRIENDS */
 /* ------------------ */
 /* ------------------ */
-//Mat
-//Trt::find_friends()
-//{
-    //axes_bounding();
-
-    //Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
-    //Scalar color_bounding = Scalar(100, 100, 0);
-
-    //vector<vector<vector<Point> > > friends;
-    //vector<Rect> new_boundings;
-    ////vector<vector<Point> > heap;
-    //map<int, vector<Point> > heap;
-    ////bool conti_nue = false;
-    ////int new_i = -1;
-    ////int max_dist = 0;
-
-    //////cout << "Size = " << contours_.size() << endl;
-
-    //////for (int i = 0; i < 44; ++i)
-    //////{
-	//////rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-		  //////color_bounding, 1, 8, 0);
-	//////cout << i << endl;
-    //////}
-
-    //////cout << "LOUL" << endl;
-
-    ////for (int i = 0; i < boundings_.size(); ++i)
-    ////{
-	////rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-		  ////color, 1, 8, 0);
-	//////cout << i << endl;
-    ////}
-
-    ////for(int i = 0; i < axes_.size(); ++i)
-    ////{
-	////int dist = distance(axes_[6][0], axes_[i][0]);
-	////cout << "Distance(6," << i << ") = " << dist << endl;
-    ////}
-
-    ////int dist = distance(axes_[6][0], axes_[34][0]);
-    ////cout << "Distance(6,34) = " << dist << endl;
-
-    ////rectangle(mat_res, boundings_[6].tl(), boundings_[6].br(),
-	      ////color_bounding, 1, 8, 0);
-    ////rectangle(mat_res, boundings_[34].tl(), boundings_[34].br(),
-	      ////color_bounding, 1, 8, 0);
-    //////rectangle(mat_res, boundings_[39].tl(), boundings_[39].br(),
-    //////color_bounding, 1, 8, 0);
-    //////rectangle(mat_res, boundings_[6].tl(), boundings_[6].br(),
-	      //////color_bounding, 1, 8, 0);
-
-    //////print_point(axes_[6][0], 6);
-    //////print_point(axes_[34][0], 34);
-
-
-
-    //////////
-    //// ****************
-    //// /////
-
-    ////heap[6] = axes_[6];
-
-    ////for (int i = 0; i < axes_.size(); ++i)
-    ////{
-	////int dist = distance(axes_[33][0], axes_[i][0]);
-	////cout << "Distance(6," << i << ") = " << dist << endl;
-
-	////if (dist <= 15)
-	    ////heap[i] = axes_[i];
-    ////}
-
-    ////vector<Rect> bbound = make_boundings(heap, boundings_);
-
-    ////set_boundings(bbound);
-
-
-    ////for (int i = 0; i < boundings_.size(); i++)
-    ////{
-	//////axes.push_back(points_axe(contours_[i]));
-
-	////rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-		  ////color_bounding, 1, 8, 0);
-	//////line(mat_res, axes[i][0], axes[i][1], color_axe, 1, 8, 0);
-    ////}
-
-
-
-
-    ////int inc = axes_.size();
-    ////int i = 0;
-    ////while (inc != 0)
-    //for (int i = 0; i < axes_.size(); ++i)
-    //{
-	////cout << "-- debut en i = " << i << endl;
-	////if (!conti_nue)
-	////{
-	////cout << "****** NEW HASH ******" << endl;
-	////cout << i << endl;
-	    //heap.clear();
-	    //heap[i] = axes_[i];
-	    ////}
-
-	    ////new_i = -1;
-	    ////max_dist = 0;
-	    ////int moment1 = second_area_moment(boundings_[i]);
-
-	//int size = heap.size();
-	//int l1 = distance(axes_[i][0], axes_[i][1]);
-	////cout << "Size before = " << heap.size() << endl;
-
-	//for (int j = i+1; j < axes_.size(); ++j)
-	//{
-	    ////if (j != i)
-	    ////{
-		//int dist = distance(axes_[i][0], axes_[j][0]);
-		//int l2 = distance(axes_[j][0], axes_[j][1]);
-		//int para = parallel_axes(axes_[i], axes_[j]);
-
-		//if (dist <= 15)
-		//{
-		    //cout << "--------------------------" << endl;
-		    //cout << "longueur i:" << i << " = " << l1 << endl;
-		    //cout << "longueur j:" << j << " = " << l2 << endl;
-		    //cout << "diff longueurs = " << (l1 - l2) << endl;
-		    //cout << "coeff parallel = " << para << endl;
-		    //cout << "--------------------------" << endl;
-
-		    ////if ((res_mom >= 0.9) && (res_mom <= 1.1))
-		    //if ((para == 0) &&
-			//((abs(l1 - l2)) <= (MIN_INT(l1, l2) / 6)))
-		    //{
-			////cout << j << endl;
-			//heap[j] = axes_[j];
-		    //}
-
-		    ////if (dist > max_dist)
-		    ////{
-		    ////max_dist = dist;
-		    ////new_i = j;
-		    ////}
-		//}
-		////}
-	//}
-
-	////cout << "Size after = " << heap.size() << endl;
-	////cout << "Fini de trouver" << endl;
-
-	////if (heap.size() > size)
-	////{
-	////conti_nue = true;
-	////i = new_i;
-	////cout << "On continue" << endl;
-	////}
-	////else
-	//if ((heap.size() > 1))// && (heap.size() == size))
-	//{
-	    //vector<Rect> bbound = make_boundings(heap, boundings_);
-	    //new_boundings.insert(new_boundings.end(),
-				 //bbound.begin(), bbound.end());
-	    //vector<vector<Point> > vec = make_vector(heap);
-	    //friends.push_back(vec);
-	    ////conti_nue = false;
-	    ////cout << "On crée un nouveau vector" << endl;
-	    ////i++;
-	    ////}
-	    ////else
-	    ////i++;
-
-	    ////inc--;
-	//}
-
-    //}
-
-    //cout << "Size Friends = " << friends.size() << endl;
-
-
-
-
-
-
-
-
-
-
-    ////for (int i = 0; i < axes_.size(); ++i)
-    ////{
-	////p = i;
-	////if (!conti_nue)
-	////{
-	    ////heap.clear();
-	    //////heap.insert(pair<p, axes_[i]>);
-	    ////heap[i] = axes_[i];
-	////}
-
-	////int size = heap.size();
-
-	////cout << "Size of heap = " << size << endl;
-
-	////Point p1 = axes_[i][0];
-
-	////for (int j = i+1; j < axes_.size(); ++j)
-	////{
-	    ////int dist = distance(p1, axes_[j][0]);
-	    //////int dist = distance(axes_[6][0], axes_[j][0]);
-
-	    //////cout << "Distance(" << i << ", " << j << ") = " << dist << endl;
-
-	    ////if (dist <= 15)
-	    ////{
-		//////heap.insert(pair<j, axes_[j]);
-		////heap[j] = axes_[j];
-		//////new_boundings.push_back(boundings_[j]);
-	    ////}
-
-	    ////if (new_i == -1)
-	    ////{
-		////new_i = j;
-		//////new_boundings.push_back(boundings_[i]);
-	    ////}
-	////}
-
-	////if ((heap.size() == size) && (size > 1))
-	////{
-	    ////vector<Rect> bbound = make_boundings(heap, boundings_);
-	    ////new_boundings.insert(new_boundings.end(),
-				 ////bbound.begin(), bbound.end());
-	    ////vector<vector<Point> > vec = make_vector(heap);
-
-	    ////cout << "Vector = " << vec.size() << endl;
-
-	    ////friends.push_back(vec);
-	    ////conti_nue = false;
-	    ////new_i = -1;
-	////}
-	////else if ((heap.size() > size) && (new_i > 0))
-	////{
-	    ////conti_nue = true;
-	    ////i = new_i;
-	////}
-    ////}
-
-    ////cvFont f;
-    ////initFont(&f, CV_FONT_HERSHEY_SIMPLEX, 1.0, 1.0, 0, 8, 8);
-
-    //int loul = 20;
-    //for (int i = 0; i < boundings_.size(); i++)
-    //{
-	////axes.push_back(points_axe(contours_[i]));
-
-	//Scalar color = Scalar(0, 0, loul);
-	//Scalar color2 = Scalar(0, loul, 0);
-	//rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-		  //color, 1, 8, 0);
-
-
-	//ostringstream oss;
-	//oss << i;
-	//Point pt(axes_[i][0].x, axes_[i][0].y + i*2);
-	//putText(mat_res, oss.str(), pt, FONT_HERSHEY_SCRIPT_SIMPLEX, 0.3, color2);
-	//loul += 10;
-	////line(mat_res, axes[i][0], axes[i][1], color_axe, 1, 8, 0);
-    //}
-
-    //set_boundings(new_boundings);
-
-
-    //for (int i = 0; i < boundings_.size(); i++)
-//{
-    ////axes.push_back(points_axe(contours_[i]));
-
-    //rectangle(mat_res, boundings_[i].tl(), boundings_[i].br(),
-	      //color_bounding, 1, 8, 0);
-    ////line(mat_res, axes[i][0], axes[i][1], color_axe, 1, 8, 0);
-//}
-
-
-
-    ////cout << "Size friends_ = " << friends.size() << endl;
-    //set_friends(friends);
-    //set_mat(mat_res);
-
-    //return mat_res;
-//}
+Mat
+Trt::find_friends()
+{
+    axes_bounding();
+
+    Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
+    vector<set<Axe> > friends;
+    vector<set<Axe> >::iterator it;
+    bool in = false;
+
+    for (int i = 0; i < axes_.size(); i++)
+    {
+	//cout << "---------------------" << endl;
+	print_friends();
+	Point p1 = axes_[i].p1_;
+	set<Axe> tmp;
+	set<Axe>::iterator a_it;
+	in = false;
+
+	for (it = friends.begin(); it != friends.end(); it++)
+	{
+	    a_it = it->find(axes_[i]);
+
+	    if (a_it != it->end())
+	    {
+		cout << "Oui on a trouvé un ancien" << endl;
+		tmp = *it;
+		in = true;
+		break;
+	    }
+	    else
+		tmp.insert(axes_[i]);
+	}
+
+	for (int j = 0; j < axes_.size(); j++)
+	{
+	    if (j != i)
+	    {
+		Point p2 = axes_[j].p1_;
+
+		if (distance(p1, p2) <= 15)
+		{
+		    tmp.insert(axes_[j]);
+		    //cout << "(" << i << ", " << j << ") " << endl;
+		}
+	    }
+	}
+
+	if (!in && (tmp.size() > 1))
+	    friends.push_back(tmp);
+
+	set_friends(friends);
+	//cout << "---------------------" << endl;
+    }
+
+    cout << "Size : " << friends.size() << endl;
+
+    set_friends(friends);
+
+    print_friends();
+
+    return (mat_res);
+}
 
 
 /* *********************************************************************** */
@@ -520,15 +305,35 @@ Trt::print_contours()
     cout << "Contours : ";
     int i = 0;
     for (auto vec : contours_)
-    //for (int i = 0; i < 500; i++)
     {
-	//vector<Point> vec = contours_[i];
 	cout << i << " : ";
 	for (auto v : vec)
 	    cout << v << ' ';
-	//int s = vec.size();
 	i++;
 	cout << endl;
+    }
+}
+
+
+
+/* ------------------ */
+/* ------------------ */
+/* PRINT_FRIENDS */
+/* ------------------ */
+/* ------------------ */
+void
+Trt::print_friends()
+{
+    cout << "Friends : " << endl;
+    for (int i = 0; i < friends_.size(); i++)
+    {
+	cout << "   Set : " << i << " [ ";
+
+	//for (int j = 0; j < friends_[i].size(); j++)
+	for (auto a : friends_[i])
+	    print_axe(a);
+
+	cout << " ] " << endl;
     }
 }
 
@@ -582,6 +387,41 @@ points_axe(vector<Point> v)
     }
 
     return (Axe(p0, p1));
+}
+
+/* ------------------ */
+/* ------------------ */
+/* RECT_AXE */
+/* ------------------ */
+/* ------------------ */
+Axe
+rect_axe(RotatedRect r)
+{
+    Point2f r_pts[4];
+    r.points(r_pts);
+
+    int width = distance(r_pts[1], r_pts[2]);
+    int height = distance(r_pts[0], r_pts[1]);
+
+    Point p1;
+    Point p2;
+
+    if (width > height)
+    {
+	p1 = Point((r_pts[0].x + r_pts[1].x) / 2,
+		   (r_pts[0].y + r_pts[1].y) / 2);
+	p2 = Point((r_pts[2].x + r_pts[3].x) / 2,
+		   (r_pts[2].y + r_pts[3].y) / 2);
+    }
+    else
+    {
+	p1 = Point((r_pts[1].x + r_pts[2].x) / 2,
+		   (r_pts[1].y + r_pts[2].y) / 2);
+	p2 = Point((r_pts[0].x + r_pts[3].x) / 2,
+		   (r_pts[0].y + r_pts[3].y) / 2);
+    }
+
+    return (Axe(p1, p2));
 }
 
 /* ------------------ */
@@ -661,31 +501,34 @@ make_boundings(map<int, vector<Point> > m, vector<Rect> b)
 void
 print_point(Point p, int i)
 {
-    cout << "Point " << i << " (" << p.x << ", " << p.y << ")" << endl;
+    cout << "Point " << i << " (" << p.x;
+    cout << ", " << p.y << ")" << endl;
 }
 
-//int
-//second_area_moment(Rect r1)
-//{
-    //int height = r1.height;
-    //int width = r1.width;
-    //int h = height*height*height;
+void
+print_axe(Axe a)
+{
+    int x1 = a.p1_.x;
+    int x2 = a.p2_.x;
+    int y1 = a.p1_.y;
+    int y2 = a.p2_.y;
 
-    //return ((width*h) / 12);
-//}
+    cout << "{ (" << x1 << ", " << y1 << ") , (";
+    cout << x2 << ", " << y2 << ") } ";
+}
 
 
 int
-parallel_axes(vector<Point> a1, vector<Point> a2)
+parallel_axes(Axe a1, Axe a2)
 {
-    int x1 = a1[0].x;
-    int y1 = a1[0].y;
-    int x2 = a1[1].x;
-    int y2 = a1[1].y;
-    int x3 = a2[0].x;
-    int y3 = a2[0].y;
-    int x4 = a2[1].x;
-    int y4 = a2[1].y;
+    int x1 = a1.p1_.x;
+    int y1 = a1.p1_.y;
+    int x2 = a1.p2_.x;
+    int y2 = a1.p2_.y;
+    int x3 = a2.p1_.x;
+    int y3 = a2.p1_.y;
+    int x4 = a2.p2_.x;
+    int y4 = a2.p2_.y;
 
     return (((x2 - x1) * (y4 - y3)) - ((y2 - y1) * (x4 - x3)));
 }

@@ -21,4 +21,20 @@ class Axe
 	Point p2_;
 };
 
+bool operator==(Axe const& a1, Axe const& a2);
+
+bool operator<(Axe const& a1, Axe const& a2);
+
+inline bool operator==(Axe const& a1, Axe const& a2)
+{
+    return ((a1.p1_.x == a2.p1_.x) && (a1.p1_.y == a2.p1_.y) &&
+	    (a1.p2_.x == a2.p2_.x) && (a1.p2_.y == a2.p2_.y));
+}
+
+inline bool operator<(Axe const& a1, Axe const& a2)
+{
+    return ((a1.p1_.x < a2.p1_.x) &&// (a1.p1_.y == a2.p1_.y) &&
+	    (a1.p2_.x < a2.p2_.x));// && (a1.p2_.y == a2.p2_.y));
+}
+
 #endif // AXE_HH
