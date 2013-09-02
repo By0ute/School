@@ -238,26 +238,26 @@ Trt::find_friends()
     for (int i = 0; i < axes_.size(); i++)
     {
 	//cout << "---------------------" << endl;
-	print_friends();
+	//print_friends();
 	Point p1 = axes_[i].p1_;
 	set<Axe> tmp;
-	set<Axe>::iterator a_it;
-	in = false;
+	//set<Axe>::iterator a_it;
+	//in = false;
 
-	for (it = friends.begin(); it != friends.end(); it++)
-	{
-	    a_it = it->find(axes_[i]);
+	//for (it = friends.begin(); it != friends.end(); it++)
+	//{
+	    //a_it = it->find(axes_[i]);
 
-	    if (a_it != it->end())
-	    {
-		cout << "Oui on a trouvé un ancien" << endl;
-		tmp = *it;
-		in = true;
-		break;
-	    }
-	    else
+	    //if (a_it != it->end())
+	    //{
+		//cout << "Oui on a trouvé un ancien" << endl;
+		//tmp = *it;
+		//in = true;
+		//break;
+	    //}
+	    //else
 		tmp.insert(axes_[i]);
-	}
+		//}
 
 	for (int j = 0; j < axes_.size(); j++)
 	{
@@ -265,19 +265,50 @@ Trt::find_friends()
 	    {
 		Point p2 = axes_[j].p1_;
 
-		if (distance(p1, p2) <= 15)
+		if (distance(p1, p2) <= 30)
 		{
 		    tmp.insert(axes_[j]);
-		    //cout << "(" << i << ", " << j << ") " << endl;
+		    cout << "(" << i << ", " << j << ") " << endl;
 		}
 	    }
 	}
 
-	if (!in && (tmp.size() > 1))
-	    friends.push_back(tmp);
+	//if (!in && (tmp.size() > 1))
+	//friends.push_back(tmp);
 
-	set_friends(friends);
+	//set_friends(friends);
 	//cout << "---------------------" << endl;
+
+	if (tmp.size() > 1)
+	{
+	    set<Axe>::iterator sit;
+	    bool insert = false;
+
+	    for (set<Axe> s : friends)
+	    {
+		if (insert)
+		    break;
+
+		//for (inc = 0; inc < tmp.size(); inc++)
+		for (Axe a : tmp)
+		{
+		    sit = s.find(a);
+
+		    if (sit != s.end())
+		    {
+			cout << endl << "j'ai trouvé un copain" << endl;
+			insert = true;
+			s.insert(tmp.begin(), tmp.end());
+			break;
+		    }
+		}
+
+	    }
+
+	    if (!insert)
+		friends.push_back(tmp);
+	}
+
     }
 
     cout << "Size : " << friends.size() << endl;
