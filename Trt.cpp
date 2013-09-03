@@ -201,8 +201,8 @@ Trt::axes_bounding()
 
     for (int i = 0; i < contours_.size(); i++)
     {
-	//axes.push_back(points_axe(contours_[i]));
-	axes.push_back(rect_axe(rects_[i]));
+	axes.push_back(points_axe(contours_[i]));
+	//axes.push_back(rect_axe(rects_[i]));
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
@@ -231,15 +231,40 @@ Trt::find_friends()
     axes_bounding();
 
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
+    Scalar color_axe= Scalar(100, 0, 255);
+    Scalar color_bounding = Scalar(255, 255, 0);
+    Scalar color_text = Scalar(255, 255, 255);
     vector<set<Axe> > friends;
     vector<set<Axe> >::iterator it;
     bool in = false;
+    int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
+    double fontScale = 0.3;
+    int thickness = 1;
 
     for (int i = 0; i < axes_.size(); i++)
     {
-	//cout << "---------------------" << endl;
+	//line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
+
+	Point2f rect_points[4];
+	rects_[i].points(rect_points);
+
+	for (int j = 0; j < 4; j++)
+	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
+		 color_bounding, 1, 8);
+
+
+
+	cout << "---------------------" << endl;
 	//print_friends();
 	Point p1 = axes_[i].p1_;
+	Point p(p1.x, p1.y + i);
+	ostringstream oss;
+
+	oss << i;
+
+	putText(mat_res, oss.str(), p, fontFace, fontScale,
+		color_text, thickness, 8);
+
 	set<Axe> tmp;
 	//set<Axe>::iterator a_it;
 	//in = false;
@@ -264,12 +289,23 @@ Trt::find_friends()
 	    if (j != i)
 	    {
 		Point p2 = axes_[j].p1_;
+		int dist = distance(p1, p2);
 
-		if (distance(p1, p2) <= 30)
+		cout << " [ ";
+		print_point(p1, i);
+		cout << ", ";
+		print_point(p2, j);
+		cout << " ] = " << dist;
+
+
+		if (dist <= 50)
 		{
 		    tmp.insert(axes_[j]);
-		    cout << "(" << i << ", " << j << ") " << endl;
+		    //cout << "(" << i << ", " << j << ") " << endl;
+		    cout << " : j'insère" << endl;
 		}
+		else
+		    cout << endl;
 	    }
 	}
 
@@ -297,6 +333,7 @@ Trt::find_friends()
 		    if (sit != s.end())
 		    {
 			cout << endl << "j'ai trouvé un copain" << endl;
+			print_axe(a);
 			insert = true;
 			s.insert(tmp.begin(), tmp.end());
 			break;
@@ -315,7 +352,7 @@ Trt::find_friends()
 
     set_friends(friends);
 
-    print_friends();
+    //print_friends();
 
     return (mat_res);
 }
@@ -533,7 +570,7 @@ void
 print_point(Point p, int i)
 {
     cout << "Point " << i << " (" << p.x;
-    cout << ", " << p.y << ")" << endl;
+    cout << ", " << p.y << ")";// << endl;
 }
 
 void
