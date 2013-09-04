@@ -201,8 +201,8 @@ Trt::axes_bounding()
 
     for (int i = 0; i < contours_.size(); i++)
     {
-	axes.push_back(points_axe(contours_[i]));
-	//axes.push_back(rect_axe(rects_[i]));
+	//axes.push_back(points_axe(contours_[i]));
+	axes.push_back(rect_axe(rects_[i]));
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
@@ -235,15 +235,14 @@ Trt::find_friends()
     Scalar color_bounding = Scalar(255, 255, 0);
     Scalar color_text = Scalar(255, 255, 255);
     vector<set<Axe> > friends;
-    vector<set<Axe> >::iterator it;
-    bool in = false;
+
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
     double fontScale = 0.3;
     int thickness = 1;
 
     for (int i = 0; i < axes_.size(); i++)
     {
-	//line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
+	line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
@@ -253,36 +252,16 @@ Trt::find_friends()
 		 color_bounding, 1, 8);
 
 
-
-	cout << "---------------------" << endl;
-	//print_friends();
 	Point p1 = axes_[i].p1_;
+
 	Point p(p1.x, p1.y + i);
 	ostringstream oss;
-
 	oss << i;
-
 	putText(mat_res, oss.str(), p, fontFace, fontScale,
 		color_text, thickness, 8);
 
 	set<Axe> tmp;
-	//set<Axe>::iterator a_it;
-	//in = false;
-
-	//for (it = friends.begin(); it != friends.end(); it++)
-	//{
-	    //a_it = it->find(axes_[i]);
-
-	    //if (a_it != it->end())
-	    //{
-		//cout << "Oui on a trouvé un ancien" << endl;
-		//tmp = *it;
-		//in = true;
-		//break;
-	    //}
-	    //else
-		tmp.insert(axes_[i]);
-		//}
+	tmp.insert(axes_[i]);
 
 	for (int j = 0; j < axes_.size(); j++)
 	{
@@ -291,68 +270,41 @@ Trt::find_friends()
 		Point p2 = axes_[j].p1_;
 		int dist = distance(p1, p2);
 
-		cout << " [ ";
-		print_point(p1, i);
-		cout << ", ";
-		print_point(p2, j);
-		cout << " ] = " << dist;
-
-
-		if (dist <= 50)
-		{
+		if (dist <= 20)
 		    tmp.insert(axes_[j]);
-		    //cout << "(" << i << ", " << j << ") " << endl;
-		    cout << " : j'insère" << endl;
-		}
-		else
-		    cout << endl;
 	    }
 	}
-
-	//if (!in && (tmp.size() > 1))
-	//friends.push_back(tmp);
-
-	//set_friends(friends);
-	//cout << "---------------------" << endl;
 
 	if (tmp.size() > 1)
-	{
-	    set<Axe>::iterator sit;
-	    bool insert = false;
-
-	    for (set<Axe> s : friends)
-	    {
-		if (insert)
-		    break;
-
-		//for (inc = 0; inc < tmp.size(); inc++)
-		for (Axe a : tmp)
-		{
-		    sit = s.find(a);
-
-		    if (sit != s.end())
-		    {
-			cout << endl << "j'ai trouvé un copain" << endl;
-			print_axe(a);
-			insert = true;
-			s.insert(tmp.begin(), tmp.end());
-			break;
-		    }
-		}
-
-	    }
-
-	    if (!insert)
 		friends.push_back(tmp);
-	}
-
     }
+
+    vector<set<Axe> >::iterator it;
+    vector<set<Axe> >::iterator jt;
+
+    for (it = friends.begin(); it != friends.end(); it++)
+    {
+	for (jt = friends.begin(); jt != friends.end(); jt++)
+	{
+	    if (jt != it)
+	    {
+		if (is_doublon(*it, *jt))
+		{
+		    cout << "jai un doublon" << endl;
+		    it->insert(jt->begin(), jt->end());
+		    friends.erase(jt);
+		    jt = friends.begin();
+		}
+	    }
+	}
+    }
+
 
     cout << "Size : " << friends.size() << endl;
 
     set_friends(friends);
 
-    //print_friends();
+    print_friends();
 
     return (mat_res);
 }
@@ -600,3 +552,26 @@ parallel_axes(Axe a1, Axe a2)
 
     return (((x2 - x1) * (y4 - y3)) - ((y2 - y1) * (x4 - x3)));
 }
+
+bool
+is_doublon(set<Axe> s1, set<Axe> s2)
+{
+    bool res = false;
+    set<Axe>::iterator it;
+
+    for (Axe a : s2)
+    {
+	it = s1.find(a);
+
+	if (it != s1.end())
+	{
+	    res = true;
+	    break;
+	}
+    }
+
+    return res;
+}
+
+
+

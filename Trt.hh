@@ -81,6 +81,8 @@ void print_axe(Axe a);
 
 int parallel_axes(Axe a1, Axe a2);
 
+bool is_doublon(set<Axe> s1, set<Axe> s2);
+
 
 
 #endif //TRT_HH
