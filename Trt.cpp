@@ -270,8 +270,12 @@ Trt::find_friends()
 		Point p2 = axes_[j].p1_;
 		int dist = distance(p1, p2);
 
-		if (dist <= 20)
+		if (dist <= 20) // distance droite
 		    tmp.insert(axes_[j]);
+
+		// check distance diago
+		// parallèle avec angle < à alpha à déterminer
+		// longueurs approx mêmes à 1/6 près
 	    }
 	}
 
