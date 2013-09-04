@@ -13,7 +13,6 @@
 # include <sstream>
 
 # include "Axe.hh"
-# include "Box.hh"
 //# include <stdlib>
 
 using namespace cv;
