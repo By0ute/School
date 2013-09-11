@@ -1,0 +1,10 @@
+[TO COMPILE]
+* Need cmake
+* Instructions :
+> cd folder_of_trpa/
+> mkdir build
+> cd build/
+> cmake ..
+> make
+> ./App #(1st binary)
+> ./Trt #(2nd binary)
