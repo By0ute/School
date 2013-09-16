@@ -1,28 +1,33 @@
 #ifndef MODEL_HH
 # define MODEL_HH
 
+# include <string>
 # include <list>
-# include "Model.hh"
+# include <vector>
+# include "Sign.hh"
 
 using namespace std;
 
+typedef int id_type;
+
 class Model
 {
-    public:
-	Model(list<Sign> signatures);
-	~Model();
-	
-	// getters
-	Sign get_ref_sign() const;
-	list<Sign> get_signatures() const;
+  public:
+    Model(id_type id, list<Sign*> signatures);
+    ~Model();
 
-	// setters
-	void set_ref_sign(Sign s);
-	void set_signatures(list<Sign> signatures);
+    // getters
+    Sign* get_ref_sign() const;
+    list<Sign*> get_signatures() const;
 
-    private:
-	Sign* ref_sign_;
-	list<Sign*> signatures_;
+    // setters
+    void set_ref_sign(Sign* s);
+    void set_signatures(list<Sign*> signatures);
+
+  private:
+    id_type id_;
+    Sign* ref_sign_;
+    list<Sign*> signatures_;
 };
 
 #endif //MODEL_HH
