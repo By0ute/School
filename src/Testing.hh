@@ -7,7 +7,7 @@
 
 namespace Testing
 {
-    int distance(Sign s1, Sign s2);
+	double distance(Sign s1, Sign s2);
 
     void test();
 }
