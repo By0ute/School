@@ -3,6 +3,7 @@
 
 # include "VecParam.hh"
 # include <list>
+# include <string>
 
 using namespace std;
 
@@ -10,24 +11,24 @@ class Sign
 {
     public:
 	Sign();
-	Sign(int i);
-	Sign(list<VecParam> d, int i);
+	Sign(string i);
+	Sign(list<VecParam> d, string i);
 
 	~Sign();
 
 	//getter
 	list<VecParam> get_datas() const;
-	int get_id() const;
+	string get_id() const;
 
 	// setter
 	void set_datas(list<VecParam> d);
-	void set_id(int i);
+	void set_id(string i);
 
 	void add_data(VecParam v);
 
     private:
 	list<VecParam> datas_;
-	int id_;
+	string id_;
 };
 
 

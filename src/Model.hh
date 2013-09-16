@@ -8,7 +8,7 @@
 
 using namespace std;
 
-typedef int id_type;
+typedef string id_type;
 
 class Model
 {

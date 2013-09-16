@@ -10,7 +10,8 @@ Model::Model(id_type id, list<Sign*> signatures)
   int t = 5;
 
   ref_sign_ = new Sign(id);
-  vector<VecParam*> sum_vects(m, nullptr);
+  vector<VecParam> sum_vects(m);
+  vector<bool> sum_vects_b(m, false);
 
   // sum vectors from all signatures
   int i = 0;
@@ -20,19 +21,22 @@ Model::Model(id_type id, list<Sign*> signatures)
     Sign* sign = (*it_sign);
 
     int j = 0;
-    list<VecParam*> vectors = sign->get_datas();
-    list<VecParam*>::iterator it_vect;
+    list<VecParam> vectors = sign->get_datas();
+    list<VecParam>::iterator it_vect;
     for (; it_vect != vectors.end(); ++it_vect) // foreach vector
     {
-      VecParam* vector = (*it_vect);
+      VecParam vector = (*it_vect);
 
-      if (sum_vects[j] == nullptr)
-	sum_vects[j] = vector;
+      if (sum_vects_b[j] == false)
+	  {
+	    sum_vects[j] = vector;
+		sum_vects_b[j] = true;
+	  }
       else
       {
-	sum_vects[j]->set_x(sum_vects[j]->get_x() + vector->get_x());
-	sum_vects[j]->set_y(sum_vects[j]->get_y() + vector->get_y());
-	// ...
+	    sum_vects[j].set_x(sum_vects[j].get_x() + vector.get_x());
+	    sum_vects[j].set_y(sum_vects[j].get_y() + vector.get_y());
+	    // ...
       }
 
       ++j;
@@ -44,9 +48,9 @@ Model::Model(id_type id, list<Sign*> signatures)
   // divide by n
   for (int j = 0; j < m; ++j)
   {
-    VecParam* moyen_j = new VecParam();
-    moyen_j->set_x(sum_vects[j]->get_x() / n);
-    moyen_j->set_y(sum_vects[j]->get_y() / n);
+    VecParam moyen_j;
+    moyen_j.set_x(sum_vects[j].get_x() / n);
+    moyen_j.set_y(sum_vects[j].get_y() / n);
     // ...
 
     ref_sign_->add_data(moyen_j);
@@ -85,9 +89,4 @@ void
 Model::set_signatures(list<Sign*> signatures)
 {
   signatures_ = signatures;
-}
-
-int main(int argc, char** argv)
-{
-	return 0;
 }

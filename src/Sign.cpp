@@ -5,13 +5,13 @@ Sign::Sign()
 {
 }
 
-Sign::Sign(int i)
+Sign::Sign(string i)
     : datas_ (),
     id_ (i)
 {
 }
 
-Sign::Sign(list<VecParam> d, int i)
+Sign::Sign(list<VecParam> d, string i)
     : datas_ (d),
     id_ (i)
 {
@@ -29,7 +29,7 @@ Sign::get_datas() const
     return datas_;
 }
 
-int
+string
 Sign::get_id() const
 {
     return id_;
@@ -44,7 +44,7 @@ Sign::set_datas(list<VecParam> d)
 }
 
 void
-Sign::set_id(int i)
+Sign::set_id(string i)
 {
     id_ = i;
 }
