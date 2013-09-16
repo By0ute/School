@@ -63,6 +63,7 @@ VecParam::get_azimut() const
 int
 VecParam::get_altitude() const
 {
+	return altitude_;
 }
 
 int
