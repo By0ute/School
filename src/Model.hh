@@ -6,28 +6,30 @@
 # include <vector>
 # include "Sign.hh"
 
+# define MODEL_SIZE 25
+
 using namespace std;
 
 typedef string id_type;
 
 class Model
 {
-  public:
-    Model(id_type id, list<Sign*> signatures);
-    ~Model();
+    public:
+	Model(id_type id, list<Sign*> signatures);
+	~Model();
 
-    // getters
-    Sign* get_ref_sign() const;
-    list<Sign*> get_signatures() const;
+	// getters
+	Sign* get_ref_sign() const;
+	list<Sign*> get_signatures() const;
 
-    // setters
-    void set_ref_sign(Sign* s);
-    void set_signatures(list<Sign*> signatures);
+	// setters
+	void set_ref_sign(Sign* s);
+	void set_signatures(list<Sign*> signatures);
 
-  private:
-    id_type id_;
-    Sign* ref_sign_;
-    list<Sign*> signatures_;
+    private:
+	id_type id_;
+	Sign* ref_sign_;
+	list<Sign*> signatures_;
 };
 
 #endif //MODEL_HH

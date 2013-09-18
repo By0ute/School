@@ -9,10 +9,10 @@ main(int argc, char** argv)
     cout << "MAIN APPRENTISSAGE" << endl;
     cout << "------------------" << endl;
 
-    if (argc < 1)
+    if (argc < 2)
     {
-	cout << "Usage: " << argv[0] << " filename" << endl;
-	return 1;
+	cout << "[Usage] : " << argv[0] << " {filename}.txt" << endl;
+	return -1;
     }
 
     list<Sign*> listSign;

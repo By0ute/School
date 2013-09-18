@@ -4,6 +4,7 @@
 # include <iostream>
 # include "Sign.hh"
 # include "VecParam.hh"
+# include <math.h>
 
 namespace Testing
 {
