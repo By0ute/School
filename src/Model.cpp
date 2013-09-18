@@ -7,62 +7,48 @@ Model::Model(id_type id, list<Sign*> signatures)
 {
   int n = signatures_.size();
   int m = 25;
-  int t = 5;
+  //int t = 5;
 
-  ref_sign_ = new Sign(id);
-  vector<VecParam> sum_vects(m);
-  vector<bool> sum_vects_b(m, false);
-
-  // sum vectors from all signatures
-  int i = 0;
-  list<Sign*>::iterator it_sign;
-  for (; it_sign != signatures_.end(); ++it_sign) // foreach signature
+  list<VecParam> sum_vects;
+  for (int j = 0; j < m; ++j) // foreach vector
   {
-    Sign* sign = (*it_sign);
+    VecParam sum_vect;
 
-    int j = 0;
-    list<VecParam> vectors = sign->get_datas();
-    list<VecParam>::iterator it_vect;
-    for (; it_vect != vectors.end(); ++it_vect) // foreach vector
+    list<Sign*>::iterator it_sign = signatures_.begin();
+    if (it_sign != signatures_.end())
     {
-      VecParam vector = (*it_vect);
+      sum_vect = (*it_sign)->get_datas()[0];
+      it_sign++;
+    }
+    for (; it_sign != signatures_.end(); ++it_sign) // foreach signature
+    {
+      VecParam vector = (*it_sign)->get_datas()[j];
 
-      if (sum_vects_b[j] == false)
-	  {
-	    sum_vects[j] = vector;
-		sum_vects_b[j] = true;
-	  }
-      else
-      {
-	    sum_vects[j].set_x(sum_vects[j].get_x() + vector.get_x());
-	    sum_vects[j].set_y(sum_vects[j].get_y() + vector.get_y());
-	    sum_vects[j].set_timeStamp(sum_vects[j].get_timeStamp() + vector.get_timeStamp());
-	    sum_vects[j].set_position(sum_vects[j].get_position() + vector.get_position());
-	    sum_vects[j].set_azimut(sum_vects[j].get_azimut() + vector.get_azimut());
-	    sum_vects[j].set_altitude(sum_vects[j].get_altitude() + vector.get_altitude());
-	    sum_vects[j].set_pression(sum_vects[j].get_pression() + vector.get_pression());
-      }
-
-      ++j;
+      // sum j-th vector from all signatures into sum_vect
+      sum_vect.set_x(sum_vect.get_x() + vector.get_x());
+      sum_vect.set_y(sum_vect.get_y() + vector.get_y());
+      sum_vect.set_timeStamp(sum_vect.get_timeStamp() + vector.get_timeStamp());
+      sum_vect.set_position(sum_vect.get_position() + vector.get_position());
+      sum_vect.set_azimut(sum_vect.get_azimut() + vector.get_azimut());
+      sum_vect.set_altitude(sum_vect.get_altitude() + vector.get_altitude());
+      sum_vect.set_pression(sum_vect.get_pression() + vector.get_pression());
     }
 
-    ++i;
+    // divide sum_vect by n
+    sum_vect.set_x(sum_vect.get_x() / n);
+    sum_vect.set_y(sum_vect.get_y() / n);
+    sum_vect.set_timeStamp(sum_vect.get_timeStamp() / n);
+    sum_vect.set_position(sum_vect.get_position() / n);
+    sum_vect.set_azimut(sum_vect.get_azimut() / n);
+    sum_vect.set_altitude(sum_vect.get_altitude() / n);
+    sum_vect.set_pression(sum_vect.get_pression() / n);
+
+    // add sum_vect to the list
+    sum_vects.push_back(sum_vect);
   }
 
-  // divide by n
-  for (int j = 0; j < m; ++j)
-  {
-    VecParam moyen_j;
-    moyen_j.set_x(sum_vects[j].get_x() / n);
-    moyen_j.set_y(sum_vects[j].get_y() / n);
-    moyen_j.set_timeStamp(sum_vects[j].get_timeStamp() / n);
-    moyen_j.set_position(sum_vects[j].get_position() / n);
-    moyen_j.set_azimut(sum_vects[j].get_azimut() / n);
-    moyen_j.set_altitude(sum_vects[j].get_altitude() / n);
-    moyen_j.set_pression(sum_vects[j].get_pression() / n);
-
-    ref_sign_->add_data(moyen_j);
-  }
+  // create model signature from list of vectors
+  ref_sign_ = new Sign(sum_vects, id);
 }
 
 Model::~Model()
