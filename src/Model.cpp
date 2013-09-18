@@ -36,7 +36,11 @@ Model::Model(id_type id, list<Sign*> signatures)
       {
 	    sum_vects[j].set_x(sum_vects[j].get_x() + vector.get_x());
 	    sum_vects[j].set_y(sum_vects[j].get_y() + vector.get_y());
-	    // ...
+	    sum_vects[j].set_timeStamp(sum_vects[j].get_timeStamp() + vector.get_timeStamp());
+	    sum_vects[j].set_position(sum_vects[j].get_position() + vector.get_position());
+	    sum_vects[j].set_azimut(sum_vects[j].get_azimut() + vector.get_azimut());
+	    sum_vects[j].set_altitude(sum_vects[j].get_altitude() + vector.get_altitude());
+	    sum_vects[j].set_pression(sum_vects[j].get_pression() + vector.get_pression());
       }
 
       ++j;
@@ -51,7 +55,11 @@ Model::Model(id_type id, list<Sign*> signatures)
     VecParam moyen_j;
     moyen_j.set_x(sum_vects[j].get_x() / n);
     moyen_j.set_y(sum_vects[j].get_y() / n);
-    // ...
+    moyen_j.set_timeStamp(sum_vects[j].get_timeStamp() / n);
+    moyen_j.set_position(sum_vects[j].get_position() / n);
+    moyen_j.set_azimut(sum_vects[j].get_azimut() / n);
+    moyen_j.set_altitude(sum_vects[j].get_altitude() / n);
+    moyen_j.set_pression(sum_vects[j].get_pression() / n);
 
     ref_sign_->add_data(moyen_j);
   }
@@ -59,8 +67,8 @@ Model::Model(id_type id, list<Sign*> signatures)
 
 Model::~Model()
 {
-  //delete(ref_sign_);
-  //delete(signatures_);
+  delete(ref_sign_);
+  delete(signatures_);
 }
 
 // getters
