@@ -5,6 +5,7 @@
 # include "VecParam.hh"
 # include "Parseur.hh"
 # include "Sign.hh"
+# include "Model.hh"
 # include "Base.hh"
 # include "Learning.hh"
 # include "Testing.hh"

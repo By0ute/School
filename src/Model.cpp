@@ -7,7 +7,6 @@ Model::Model(id_type id, list<Sign*> signatures)
 {
   int n = signatures_.size();
   int m = 25;
-  //int t = 5;
 
   list<VecParam> sum_vects;
   for (int j = 0; j < m; ++j) // foreach vector
@@ -17,12 +16,17 @@ Model::Model(id_type id, list<Sign*> signatures)
     list<Sign*>::iterator it_sign = signatures_.begin();
     if (it_sign != signatures_.end())
     {
-      sum_vect = (*it_sign)->get_datas()[0];
+      list<VecParam>::iterator it_vect = (*it_sign)->get_datas().begin();
+      advance(it_vect, j);
+      sum_vect = (*it_vect);
+
       it_sign++;
     }
     for (; it_sign != signatures_.end(); ++it_sign) // foreach signature
     {
-      VecParam vector = (*it_sign)->get_datas()[j];
+      list<VecParam>::iterator it_vect = (*it_sign)->get_datas().begin();
+      advance(it_vect, j);
+      VecParam vector = (*it_vect);
 
       // sum j-th vector from all signatures into sum_vect
       sum_vect.set_x(sum_vect.get_x() + vector.get_x());
@@ -49,38 +53,4 @@ Model::Model(id_type id, list<Sign*> signatures)
 
   // create model signature from list of vectors
   ref_sign_ = new Sign(sum_vects, id);
-}
-
-Model::~Model()
-{
-  delete(ref_sign_);
-  delete(signatures_);
-}
-
-// getters
-
-Sign*
-Model::get_ref_sign() const
-{
-  return ref_sign_;
-}
-
-list<Sign*>
-Model::get_signatures() const
-{
-  return signatures_;
-}
-
-// setters
-
-void
-Model::set_ref_sign(Sign* s)
-{
-  ref_sign_ = s;
-}
-
-void
-Model::set_signatures(list<Sign*> signatures)
-{
-  signatures_ = signatures;
 }
