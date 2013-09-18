@@ -72,7 +72,30 @@ VecParam::get_pression() const
     return pression_;
 }
 
-// setter
+
+/**
+ *  returns [x, y, timeStamp, position, azimut, altitude, pression]
+ */
+vector<int>
+VecParam::get_vector_params() const
+{
+    vector<int> res;
+
+    res.push_back(x_); // x
+    res.push_back(y_); // y
+    res.push_back(timeStamp_); // time of this point
+    res.push_back(position_); // pen up or down
+    res.push_back(azimut_); // azimut
+    res.push_back(altitude_); // altitude
+    res.push_back(pression_); // pression
+
+    return res;
+}
+
+
+/**
+ *  setter
+ */
 void
 VecParam::set_x(int x)
 {
@@ -115,7 +138,9 @@ VecParam::set_pression(int p)
     pression_ = p;
 }
 
-// utils
+/**
+ *  utils
+ */
 void
 VecParam::print()
 {
