@@ -83,26 +83,43 @@ Sign*	parseFile(string filename, string user)
     return signature;
 }
 
-void	parseTrt(string filename)
+TestObj*  parseTrt(string filename)
 {
-    ifstream file(filename);
+    TestObj *testingObj = NULL;
+    list<Sign*> listSign;
+    list<string> identities;
     string line;
+    ifstream file(filename);
 
     if (file)
     {
 	while (getline(file, line))
 	{
-	    size_t j = line.find(' ');
-	    string filename;
-	    string username;
-	    if (j == string::npos)
-		cerr << filename << ": Wrong format" << endl;
-	    else
+	    int j = 0;
+	    if ((j = line.find(' ')) != string::npos)
 	    {
-		filename = line.substr(0, j);
-		username = line.substr(j);
+		string tempFileName = line.substr(0, j);
+		Sign* sign = parseFile(tempFileName, "");
+		if (sign == NULL)
+		{
+		    cerr << "File " << line << " error" << endl;
+		    continue;
+		}
+		listSign.push_back(parseFile(tempFileName, ""));
+		identities.push_back(line.substr(j + 1));
 	    }
+	    else
+		cerr << "File " << line
+		    << " error" << endl;
 	}
 	file.close();
+	testingObj = new TestObj(listSign, identities);
     }
+
+    return testingObj;
+}
+
+void	writeFinalFile(string filetest, string id, int score, char decision)
+{
+    ofstream file("score.txt");
 }

@@ -9,9 +9,9 @@ main(int argc, char** argv)
     cout << "MAIN APPRENTISSAGE" << endl;
     cout << "------------------" << endl;
 
-    if (argc < 1)
+    if (argc < 2)
     {
-	cout << "Usage: " << argv[0] << " filename" << endl;
+	cout << "Usage: " << argv[0] << " <filename>" << endl;
 	return 1;
     }
 

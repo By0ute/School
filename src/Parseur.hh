@@ -6,6 +6,7 @@
 # include <fstream>
 # include <string>
 # include <stdlib.h>
+# include "TestObj.hh"
 
 using namespace std;
 
@@ -29,6 +30,10 @@ Sign*	parseFile(string filename, string user);
 /// This file contains the following information
 /// <file test> <id>
 /// ...
-void	parseTrt(string filename);
+TestObj*  parseTrt(string filename);
+
+/// Write final decision in score.txt
+/// <file> <id> <score <decision: t/f>
+void	writeFinalFile(string filename);
 
 #endif
