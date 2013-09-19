@@ -3,7 +3,6 @@
 
 # include <string>
 # include <list>
-# include <vector>
 # include "Sign.hh"
 
 # define MODEL_SIZE 25
@@ -14,27 +13,29 @@ typedef string id_type;
 
 class Model
 {
-    public:
-	// constructors
-	Model() = delete;
-	Model(const Model&) = delete;
-	Model(id_type id, list<Sign*> signatures);
-	// destructors
-	virtual ~Model() { delete(ref_sign_); }
+  public:
+    // constructors
+    Model(id_type id, list<Sign*> signatures);
 
-	// getters
-	const Sign* get_ref_sign() const { return ref_sign_; }
-	const list<Sign*> get_signatures() const { return signatures_; }
+    // getters
+    const id_type& get_id() const { return id_; }
+    const Sign& get_ref_sign() const { return ref_sign_; }
+    const list<Sign*>& get_signatures() const { return signatures_; }
 
-	// operators
-	Model& operator=(const Model&) = delete;
-	Model& operator==(const Model&) = delete;
+    // operators
+    bool operator==(const Model& other);
 
-    private:
-	id_type id_;
-	Sign* ref_sign_;
-	list<Sign*> signatures_;
+  private:
+    // deleted default methods
+    Model();
+    Model(const Model&);
+    Model& operator=(const Model&);
+
+  private:
+    // attributes
+    id_type id_; // identity of the user
+    Sign ref_sign_; // the model
+    list<Sign*> signatures_; // the list of training signatures
 };
-
 
 #endif //MODEL_HH
