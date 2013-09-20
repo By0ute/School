@@ -22,6 +22,7 @@ class TestObj
 	// Setter
 	void set_listSign(list<Sign*> ls);
 	void set_identities(list<string> ids);
+
     private:
 	list<Sign*> listSign;
 	list<string> identities;

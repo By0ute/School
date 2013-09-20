@@ -1,6 +1,9 @@
 #include "Parseur.hh"
 
-list<Sign*>  parse(string filename)
+/**
+ * PARSE
+ */
+list<Sign*>  parse (string filename)
 {
     list<Sign*> listSign;
     string line;
@@ -40,11 +43,18 @@ list<Sign*>  parse(string filename)
 	}
 	file.close();
     }
+    else
+    {
+	cerr << "Cannot open file " << filename << endl;
+    }
 
     return listSign;
 }
 
-Sign*	parseFile(string filename, string user)
+/**
+ * PARSEFILE
+ */
+Sign*	parseFile (string filename, string user)
 {
     list<VecParam> listVP;
     string line;
@@ -83,7 +93,10 @@ Sign*	parseFile(string filename, string user)
     return signature;
 }
 
-TestObj*  parseTrt(string filename)
+/**
+ * PARSETRT*
+ */
+TestObj*  parseTrt (string filename)
 {
     TestObj *testingObj = NULL;
     list<Sign*> listSign;
@@ -119,7 +132,11 @@ TestObj*  parseTrt(string filename)
     return testingObj;
 }
 
-void	writeFinalFile(string filetest, string id, int score, char decision)
+
+/**
+ * WRITEFINALFILE
+ */
+void	writeFinalFile (string filetest, string id, int score, char decision)
 {
     ofstream file("score.txt");
 }

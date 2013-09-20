@@ -5,11 +5,12 @@ Model::Model(id_type id, list<Sign*> signatures)
     ref_sign_ (nullptr),
     signatures_ (signatures)
 {
-    int m = MODEL_SIZE; // should be 25
-    int n = signatures_.size();
+    int model_size = NORMA_SIZE; // should be 25
+    int nb_signatures = signatures_.size();
 
     list<VecParam> sum_vects;
-    for (int j = 0; j < m; ++j) // foreach vector
+
+    for (int j = 0; j < model_size; ++j) // foreach vector
     {
 	VecParam sum_vect;
 
@@ -41,13 +42,13 @@ Model::Model(id_type id, list<Sign*> signatures)
 	}
 
 	// divide sum_vect by n
-	sum_vect.set_x(sum_vect.get_x() / n);
-	sum_vect.set_y(sum_vect.get_y() / n);
-	sum_vect.set_timeStamp(sum_vect.get_timeStamp() / n);
-	sum_vect.set_position(sum_vect.get_position() / n);
-	sum_vect.set_azimut(sum_vect.get_azimut() / n);
-	sum_vect.set_altitude(sum_vect.get_altitude() / n);
-	sum_vect.set_pression(sum_vect.get_pression() / n);
+	sum_vect.set_x(sum_vect.get_x() / nb_signatures);
+	sum_vect.set_y(sum_vect.get_y() / nb_signatures);
+	sum_vect.set_timeStamp(sum_vect.get_timeStamp() / nb_signatures);
+	sum_vect.set_position(sum_vect.get_position() / nb_signatures);
+	sum_vect.set_azimut(sum_vect.get_azimut() / nb_signatures);
+	sum_vect.set_altitude(sum_vect.get_altitude() / nb_signatures);
+	sum_vect.set_pression(sum_vect.get_pression() / nb_signatures);
 
 	// add sum_vect to the list
 	sum_vects.push_back(sum_vect);

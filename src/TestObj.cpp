@@ -13,22 +13,26 @@ TestObj::~TestObj()
 {
 }
 
-list<Sign*> TestObj::get_listSign()
+list<Sign*>
+TestObj::get_listSign()
 {
     return listSign;
 }
 
-list<string> TestObj::get_identities()
+list<string>
+TestObj::get_identities()
 {
     return identities;
 }
 
-void TestObj::set_listSign(list<Sign*> ls)
+void
+TestObj::set_listSign(list<Sign*> ls)
 {
     listSign = ls;
 }
 
-void TestObj::set_identities(list<string> ids)
+void
+TestObj::set_identities(list<string> ids)
 {
     identities = ids;
 }

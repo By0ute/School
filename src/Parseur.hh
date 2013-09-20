@@ -10,30 +10,38 @@
 
 using namespace std;
 
-/// ------ Main App -----------
+/** ------ Main App ----------- */
 
-/// Parse the input file which associate identity to file
-/// return a list of Signature obtains with the function parseFile
-/// The File contains the following information
-/// <id1> <File1>
-/// <id2> <File2> <File3> ...
-list<Sign*>  parse(string filename);
+/**
+ * Parses the input file which associate identity to file
+ * returns a list of Signature obtained with the function parseFile
+ * The File contains the following informations
+ * <id1> <File1>
+ * <id2> <File2> <File3> ...
+ */
+    list<Sign*> parse(string filename);
 
-/// Parse a signature file and create a signature with id
-/// The file contains the following informations
-/// x-coord y-coord Timestamp ButtonStatus Azimuth Altitude Pressure
-Sign*	parseFile(string filename, string user);
+/**
+ * Parses a signature file and creates a signature with id
+ * The file contains the following informations
+ * x-coord y-coord Timestamp ButtonStatus Azimuth Altitude Pressure
+ */
+    Sign* parseFile(string filename, string user);
 
-/// ------ Main Trt -----------
+/** ------ Main Trt ----------- */
 
-/// Parse a treatement file
-/// This file contains the following information
-/// <file test> <id>
-/// ...
-TestObj*  parseTrt(string filename);
+/**
+ * Parses a treatement file
+ * This file contains the following informations
+ * <file test> <id>
+ * ...
+ */
+    TestObj* parseTrt(string filename);
 
-/// Write final decision in score.txt
-/// <file> <id> <score <decision: t/f>
-void	writeFinalFile(string filename);
+/**
+ * Writes final decision in score.txt
+ * <file> <id> <score <decision: t/f>
+ */
+    void writeFinalFile(string filename);
 
 #endif

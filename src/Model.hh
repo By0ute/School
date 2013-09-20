@@ -6,8 +6,6 @@
 # include <vector>
 # include "Sign.hh"
 
-# define MODEL_SIZE 25
-
 using namespace std;
 
 typedef string id_type;
