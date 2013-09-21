@@ -1,7 +1,7 @@
 #ifndef BASE_HH
 # define BASE_HH
 
-# include "Sign.hh"
+# include "Model.hh"
 # include <set>
 
 using namespace std;
@@ -10,20 +10,20 @@ class Base
 {
     public:
 	Base();
-	Base(set<Sign> s);
+	Base(set<Model*> m);
 
 	~Base();
 
 	//getter
-	set<Sign> get_signatures() const;
+	set<Model*> get_models() const;
 
 	// setter
-	void set_signatures(set<Sign> s);
+	void set_models(set<Model*> m);
 
-	void add_signature(Sign s);
+	void add_model(Model* m);
 
     private:
-	set<Sign> signatures_;
+	set<Model*> models_;
 };
 
 

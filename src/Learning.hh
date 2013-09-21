@@ -2,14 +2,15 @@
 # define LEARNING_HH
 
 # include <iostream>
-# include "Sign.hh"
-# include "VecParam.hh"
+# include <fstream>
+# include "Base.hh"
 
 namespace Learning
 {
     void print(Sign s);
 
-    Sign normalize(Sign s);
+    Base make_base(list<Sign*>& signs);
+    void write_base(Base& b);
 }
 
 #endif //LEARNING_HH

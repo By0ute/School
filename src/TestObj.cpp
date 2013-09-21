@@ -4,8 +4,14 @@ TestObj::TestObj()
 {
 }
 
-TestObj::TestObj(list<Sign*> ls, list<string> ids) :
-    listSign(ls), identities(ids)
+//TestObj::TestObj(list<Sign*> ls, list<string> ids) :
+    //listSign(ls), identities(ids)
+//{
+//}
+
+
+TestObj::TestObj(list<pair<Sign*, string> > t)
+    : tests_ (t)
 {
 }
 
@@ -13,26 +19,42 @@ TestObj::~TestObj()
 {
 }
 
-list<Sign*>
-TestObj::get_listSign()
+list<pair<Sign*, string> >
+TestObj::get_tests()
 {
-    return listSign;
+    return tests_;
 }
 
-list<string>
-TestObj::get_identities()
-{
-    return identities;
-}
 
 void
-TestObj::set_listSign(list<Sign*> ls)
+TestObj::set_test(list<pair<Sign*, string> > t)
 {
-    listSign = ls;
+    tests_ = t;
 }
 
-void
-TestObj::set_identities(list<string> ids)
-{
-    identities = ids;
-}
+
+//list<Sign*>
+//TestObj::get_listSign()
+//{
+    //return listSign;
+//}
+
+//list<string>
+//TestObj::get_identities()
+//{
+    //return identities;
+//}
+
+//void
+//TestObj::set_listSign(list<Sign*> ls)
+//{
+    //listSign = ls;
+//}
+
+//void
+//TestObj::set_identities(list<string> ids)
+//{
+    //identities = ids;
+//}
+
+

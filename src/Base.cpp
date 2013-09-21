@@ -1,12 +1,12 @@
 #include "Base.hh"
 
 Base::Base()
-    : signatures_ ()
+    : models_ ()
 {
 }
 
-Base::Base(set<Sign> s)
-    : signatures_ (s)
+Base::Base(set<Model*> m)
+    : models_ (m)
 {
 }
 
@@ -14,20 +14,20 @@ Base::~Base()
 {
 }
 
-set<Sign>
-Base::get_signatures() const
+set<Model*>
+Base::get_models() const
 {
-    return signatures_;
+    return models_;
 }
 
 void
-Base::set_signatures(set<Sign> s)
+Base::set_models(set<Model*> m)
 {
-    signatures_ = s;
+    models_ = m;
 }
 
 void
-Base::add_signature(Sign s)
+Base::add_model(Model* m)
 {
-   signatures_.insert(s);
+   models_.insert(m);
 }

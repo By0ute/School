@@ -11,21 +11,26 @@ class TestObj
 {
     public:
 	TestObj();
-	TestObj(list<Sign*> ls, list<string> ids);
+	//TestObj(list<Sign*> ls, list<string> ids);
+	TestObj(list<pair<Sign*, string> > t);
+
 
 	~TestObj();
 
 	// Getter
-	list<Sign*> get_listSign();
-	list<string> get_identities();
+	//list<Sign*> get_listSign();
+	//list<string> get_identities();
+	list<pair<Sign*, string> > get_tests();
 
 	// Setter
-	void set_listSign(list<Sign*> ls);
-	void set_identities(list<string> ids);
+	//void set_listSign(list<Sign*> ls);
+	//void set_identities(list<string> ids);
+	void set_test(list<pair<Sign*, string> > t);
 
     private:
-	list<Sign*> listSign;
-	list<string> identities;
+	//list<Sign*> listSign;
+	//list<string> identities;
+	list<pair<Sign*, string> > tests_;
 };
 
 #endif

@@ -143,3 +143,9 @@ Sign::norma_vect(list<VecParam>& list_v)
 
     return res;
 }
+
+void
+Sign::print()
+{
+    cout << id_ << " : " << datas_.size() << "vectors" << endl;
+}

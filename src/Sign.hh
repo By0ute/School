@@ -34,6 +34,7 @@ class Sign
 	void normalize();
 	int find_tmax();
 	VecParam norma_vect(list<VecParam>& list_v);
+	void print();
 
     private:
 	list<VecParam> datas_;
