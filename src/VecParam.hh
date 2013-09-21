@@ -37,6 +37,8 @@ class VecParam
 	void set_altitude(int a);
 	void set_pression(int p);
 
+	void set_vector_params(vector<int> params);
+
 	// utils
 	void print();
 

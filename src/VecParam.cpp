@@ -138,6 +138,19 @@ VecParam::set_pression(int p)
     pression_ = p;
 }
 
+void
+VecParam::set_vector_params(vector<int> params)
+{
+   x_ = params[0];
+   y_ = params[1];
+   timeStamp_ = params[2];
+   position_ = params[3];
+   azimut_ = params[4];
+   altitude_ = params[5];
+   pression_ = params[6];
+}
+
+
 /**
  *  utils
  */

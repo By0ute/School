@@ -4,6 +4,10 @@
 # include "VecParam.hh"
 # include <list>
 # include <string>
+# include <vector>
+# include <map>
+
+# define NORMA_SIZE 25
 
 using namespace std;
 
@@ -25,6 +29,11 @@ class Sign
 	void set_id(string i);
 
 	void add_data(VecParam v);
+
+	// utils
+	void normalize();
+	int find_tmax();
+	VecParam norma_vect(list<VecParam>& list_v);
 
     private:
 	list<VecParam> datas_;
