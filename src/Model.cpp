@@ -55,7 +55,7 @@ Model::Model(id_type id, list<Sign*> signatures)
   }
 
   // create model signature from list of vectors
-  ref_sign_ = new Sign(sum_vects, id);
+  ref_sign_ = Sign(sum_vects, id);
 }
 
 bool Model::operator==(const Model& other)
