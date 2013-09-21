@@ -1,20 +1,27 @@
 #include "Model.hh"
 
-Model::Model(id_type id, list<Sign*> signatures)
+Model::Model(id_type id, Signatures& signatures)
   : id_ (id)
   , ref_sign_ (id)
   , signatures_ (signatures)
 {
   int model_size = NORMA_SIZE; // should be 25
-  int nb_signatures = signatures.size();
+  int nb_signatures = signatures.size(); // should be 4 or 8
+
+  if (nb_signatures == 0)
+	  return;
+  else if (nb_signatures == 1)
+  {
+	  ref_sign_ = Sign(*signatures.front());
+	  return;
+  }
 
   list<VecParam> sum_vects;
-
   for (int j = 0; j < model_size; ++j) // foreach vector
   {
     VecParam sum_vect;
 
-    list<Sign*>::iterator it_sign = signatures.begin();
+    Signatures::iterator it_sign = signatures.begin();
     if (it_sign != signatures.end())
     {
       list<VecParam> vectors = (*it_sign)->get_datas();
