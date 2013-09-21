@@ -60,18 +60,29 @@ namespace Learning
     {
 	set<Model*>::iterator it;
 
+	cout << "1" << endl;
 	for (it = b.get_models().begin();
 	     it != b.get_models().end();
 	     it++)
 	{
+	cout << "1.1" << endl;
 	    string filename = (*it)->get_id() + ".txt";
+	cout << "1.2" << endl;
 	    ofstream file(filename, ios::out);
 
-	    file << (*it)->get_ref_sign().get_datas().size() << endl;
+	cout << "1.2.1" << endl;
+	    Sign s = (*it)->get_ref_sign(); // AREUM
+	cout << "1.2.2" << endl;
+	    int size = (*it)->get_ref_sign().get_datas().size();
+	cout << "1.3" << endl;
+	//file << (*it)->get_ref_sign().get_datas().size() << endl;
+	file << size << endl;
 
+	cout << "1.4" << endl;
 	    list<VecParam>::iterator it_vec =
 		(*it)->get_ref_sign().get_datas().begin();
 
+	cout << "2" << endl;
 	    for (it_vec = (*it)->get_ref_sign().get_datas().begin();
 		 it_vec != (*it)->get_ref_sign().get_datas().end();
 		 it_vec++)
@@ -85,6 +96,7 @@ namespace Learning
 		file << it_vec->get_pression() << endl;
 	    }
 
+	cout << "3" << endl;
 	    file.close();
 	}
 
