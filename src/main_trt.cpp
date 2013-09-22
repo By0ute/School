@@ -25,6 +25,15 @@ main(int argc, char** argv)
 	return -1;
     }
 
+    // Erase content of score.txt
+    ofstream file("score.txt");
+    if (file)
+    {
+	file << "";
+	file.close();
+    }
+
+
     for (tuple<Sign*, string, string> test : testSign->get_tests())
 	test_sign(get<0>(test), get<1>(test), get<2>(test));
 
