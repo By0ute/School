@@ -16,7 +16,7 @@ namespace Testing
 {
     double distance(Sign* s1, Sign* s2);
 
-    void test_sign(Sign* test_sign, string& filename);
+    void test_sign(Sign* test_sign, string& filename, string& filenameTest);
 
     void test();
 }

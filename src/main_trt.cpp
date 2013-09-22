@@ -25,8 +25,8 @@ main(int argc, char** argv)
 	return -1;
     }
 
-    for (pair<Sign*, string> test : testSign->get_tests())
-	test_sign(test.first, test.second);
+    for (tuple<Sign*, string, string> test : testSign->get_tests())
+	test_sign(get<0>(test), get<1>(test), get<2>(test));
 
 
     return 0;

@@ -227,7 +227,7 @@ namespace Testing
 	cout << "SUPER DISTANCE4: " << distance(&s1, &s4) << endl;
     }
 
-    void test_sign(Sign* test_sign, string& filename)
+    void test_sign(Sign* test_sign, string& filename, string& filenameTest)
     {
 	Sign* ref_sign = parseFile(filename + ".txt", filename);
 
@@ -248,10 +248,10 @@ namespace Testing
 	    // need to add it either as an attribute to TestObj
 	    // or something else
 	    cout << filename << " " << score << endl;
-	    writeFinalFile("", filename, score, decision);
+	    writeFinalFile(filenameTest, filename, score, decision);
 	}
 	else
-	    writeFinalFile("", filename, INT_MAX, 'f');
+	    writeFinalFile(filenameTest, filename, INT_MAX, 'f');
     }
 
     double distance(Sign* s1, Sign* s2)

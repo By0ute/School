@@ -5,7 +5,7 @@ TestObj::TestObj()
 }
 
 
-TestObj::TestObj(list<pair<Sign*, string> > t)
+TestObj::TestObj(list<tuple<Sign*, string, string> > t)
     : tests_ (t)
 {
 }
@@ -14,16 +14,14 @@ TestObj::~TestObj()
 {
 }
 
-list<pair<Sign*, string> >
+list<tuple<Sign*, string, string> >
 TestObj::get_tests()
 {
     return tests_;
 }
 
-
 void
-TestObj::set_test(list<pair<Sign*, string> > t)
+TestObj::set_test(list<tuple<Sign*, string, string> > t)
 {
     tests_ = t;
 }
-

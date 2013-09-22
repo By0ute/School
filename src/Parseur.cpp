@@ -99,7 +99,7 @@ Sign*	parseFile (string filename, string user)
 TestObj*  parseTrt (string filename)
 {
     TestObj *testingObj = NULL;
-    list<pair<Sign*, string> > tests;
+    list<tuple<Sign*, string, string> > tests;
     string line;
     ifstream file(filename);
 
@@ -117,7 +117,8 @@ TestObj*  parseTrt (string filename)
 		    cerr << "File " << line << " error" << endl;
 		    continue;
 		}
-		tests.push_back(make_pair(sign, line.substr(j + 1)));
+		tests.push_back(make_tuple(sign, line.substr(j + 1),
+					   tempFileName));
 	    }
 	    else
 		cerr << "File " << line
@@ -136,5 +137,12 @@ TestObj*  parseTrt (string filename)
  */
 void	writeFinalFile (string filetest, string id, int score, char decision)
 {
-    ofstream file("score.txt");
+    ofstream file;
+
+    file.open("score.txt", std::ios_base::app);
+    file << filetest << " " <<
+	    id << " " <<
+	    score << " " << decision << endl;
+    file.close();
+
 }
