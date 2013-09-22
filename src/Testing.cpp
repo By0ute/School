@@ -221,16 +221,43 @@ namespace Testing
 	s2.normalize();
 	s3.normalize();
 	s4.normalize();
-	cout << "SUPER DISTANCE: " << distance(s1, s2) << endl;
-	cout << "SUPER DISTANCE2: " << distance(s1, s1) << endl;
-	cout << "SUPER DISTANCE3: " << distance(s1, s3) << endl;
-	cout << "SUPER DISTANCE4: " << distance(s1, s4) << endl;
+	cout << "SUPER DISTANCE: " << distance(&s1, &s2) << endl;
+	cout << "SUPER DISTANCE2: " << distance(&s1, &s1) << endl;
+	cout << "SUPER DISTANCE3: " << distance(&s1, &s3) << endl;
+	cout << "SUPER DISTANCE4: " << distance(&s1, &s4) << endl;
     }
 
-    double distance(Sign s1, Sign s2)
+    void test_sign(Sign* test_sign, string& filename)
     {
-	list<VecParam> datas1 = s1.get_datas();
-	list<VecParam> datas2 = s2.get_datas();
+	Sign* ref_sign = parseFile(filename + ".txt", filename);
+
+	if (ref_sign)
+	{
+	    test_sign->normalize();
+
+	    double score = distance(test_sign, ref_sign);
+	    char decision = 'u'; // for 'u'ndecided
+
+	    if (score <= THRESHOLD_ACCEPTATION)
+		// need to test to find the right threshold
+		decision = 't';
+	    else
+		decision = 'f';
+
+	    // name of the file_test lost in parsing
+	    // need to add it either as an attribute to TestObj
+	    // or something else
+	    cout << filename << " " << score << endl;
+	    writeFinalFile("", filename, score, decision);
+	}
+	else
+	    writeFinalFile("", filename, INT_MAX, 'f');
+    }
+
+    double distance(Sign* s1, Sign* s2)
+    {
+	list<VecParam> datas1 = s1->get_datas();
+	list<VecParam> datas2 = s2->get_datas();
 	list<VecParam>::iterator it1 = datas1.begin();
 	list<VecParam>::iterator it2 = datas2.begin();
 

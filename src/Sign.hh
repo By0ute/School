@@ -17,6 +17,7 @@ class Sign
 	Sign();
 	Sign(string i);
 	Sign(list<VecParam> d, string i);
+	Sign(const Sign& s) { Sign(s.datas_, s.id_); }
 
 	~Sign();
 

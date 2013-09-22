@@ -100,8 +100,6 @@ TestObj*  parseTrt (string filename)
 {
     TestObj *testingObj = NULL;
     list<pair<Sign*, string> > tests;
-    //list<Sign*> listSign;
-    //list<string> identities;
     string line;
     ifstream file(filename);
 
@@ -120,15 +118,12 @@ TestObj*  parseTrt (string filename)
 		    continue;
 		}
 		tests.push_back(make_pair(sign, line.substr(j + 1)));
-		    //listSign.push_back(parseFile(tempFileName, ""));
-		    //identities.push_back(line.substr(j + 1));
 	    }
 	    else
 		cerr << "File " << line
 		    << " error" << endl;
 	}
 	file.close();
-	//testingObj = new TestObj(listSign, identities);
 	testingObj = new TestObj(tests);
     }
 

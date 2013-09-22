@@ -12,7 +12,7 @@ main(int argc, char** argv)
     if (argc < 2)
     {
 	cerr << "Usage: " << argv[0] << " <test filename>" << endl;
-	return 1;
+	return -1;
     }
 
     /// Sign list and identities list
@@ -22,10 +22,12 @@ main(int argc, char** argv)
     if (!testSign)
     {
 	cerr << "Error with file " << argv[1] << endl;
-	return 1;
+	return -1;
     }
 
-    //test();
+    for (pair<Sign*, string> test : testSign->get_tests())
+	test_sign(test.first, test.second);
+
 
     return 0;
 }

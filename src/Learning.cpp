@@ -1,5 +1,7 @@
 #include "Learning.hh"
 
+using namespace std;
+
 namespace Learning
 {
 
@@ -19,11 +21,8 @@ namespace Learning
 	}
     }
 
-    Base make_base(list<Sign*>& signs)
+    Base make_base (list<Sign*>& signs)
     {
-	// to iterate on parsed signatures
-	list<Sign*>::iterator it = signs.begin();
-
 	// to make models
 	map<id_type, list<Sign*> > sort_models;
 	map<id_type, list<Sign*> >::iterator it_map;
@@ -32,17 +31,17 @@ namespace Learning
 	set<Model*> models;
 
 	// sort signatures in order to create Models
-	for (it = signs.begin(); it != signs.end(); it++)
+	for (Sign* s : signs)
 	{
-	    id_type id = (*it)->get_id();
+	    id_type id = s->get_id();
 
 	    it_map = sort_models.find(id);
 
 	    if (it_map == sort_models.end())
 		sort_models[id] = list<Sign*>();
 
-	    (*it)->normalize();
-	    sort_models[id].push_back(*it);
+	    s->normalize();
+	    sort_models[id].push_back(s);
 	}
 
 	// create Models
@@ -58,45 +57,30 @@ namespace Learning
 
     void write_base(Base& b)
     {
-	set<Model*>::iterator it;
-
-	cout << "1" << endl;
-	for (it = b.get_models().begin();
-	     it != b.get_models().end();
-	     it++)
+	for (Model* m : b.get_models())
 	{
-	cout << "1.1" << endl;
-	    string filename = (*it)->get_id() + ".txt";
-	cout << "1.2" << endl;
+	    int size = m->get_ref_sign().get_datas().size();
+	    string filename = m->get_id() + ".txt";
 	    ofstream file(filename, ios::out);
 
-	cout << "1.2.1" << endl;
-	    Sign s = (*it)->get_ref_sign(); // AREUM
-	cout << "1.2.2" << endl;
-	    int size = (*it)->get_ref_sign().get_datas().size();
-	cout << "1.3" << endl;
-	//file << (*it)->get_ref_sign().get_datas().size() << endl;
-	file << size << endl;
-
-	cout << "1.4" << endl;
-	    list<VecParam>::iterator it_vec =
-		(*it)->get_ref_sign().get_datas().begin();
-
-	cout << "2" << endl;
-	    for (it_vec = (*it)->get_ref_sign().get_datas().begin();
-		 it_vec != (*it)->get_ref_sign().get_datas().end();
-		 it_vec++)
+	    if (!file)
 	    {
-		file << it_vec->get_x() << " ";
-		file << it_vec->get_y() << " ";
-		file << it_vec->get_timeStamp() << " ";
-		file << it_vec->get_position() << " ";
-		file << it_vec->get_azimut() << " ";
-		file << it_vec->get_altitude() << " ";
-		file << it_vec->get_pression() << endl;
+		cerr << "Error : while creating file" << filename << endl;
+		return;
 	    }
 
-	cout << "3" << endl;
+
+	    for (VecParam v : m->get_ref_sign().get_datas())
+	    {
+		file << v.get_x() << " ";
+		file << v.get_y() << " ";
+		file << v.get_timeStamp() << " ";
+		file << v.get_position() << " ";
+		file << v.get_azimut() << " ";
+		file << v.get_altitude() << " ";
+		file << v.get_pression() << endl;
+	    }
+
 	    file.close();
 	}
 

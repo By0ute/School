@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Model.hh"
 
 Model::Model(id_type id, Signatures& signatures)
