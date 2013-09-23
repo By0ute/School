@@ -235,10 +235,13 @@ namespace Testing
 	{
 	    test_sign->normalize();
 
-	    double score = distance(test_sign, ref_sign);
+	    double dist = distance(test_sign, ref_sign);
+	    // IF  dist  IS IN  ]0;+inf[  THEN  -log(dist)  IS IN  ]-inf;+inf[
+	    double score = (dist == 0) ? DBL_MAX : -log10(dist);
+
 	    char decision = 'u'; // for 'u'ndecided
 
-	    if (score <= THRESHOLD_ACCEPTATION)
+	    if (score >= THRESHOLD_ACCEPTATION)
 		// need to test to find the right threshold
 		decision = 't';
 	    else
