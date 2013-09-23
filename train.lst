@@ -1,0 +1,18 @@
+MA1 sample/USER1_1.txt
+MB2 sample/USER1_1.txt sample/USER1_2.txt sample/USER1_3.txt sample/USER1_4.txt
+MC3 sample/USER1_1.txt sample/USER1_2.txt sample/USER1_3.txt sample/USER1_4.txt sample/USER1_5.txt sample/USER1_6.txt sample/USER1_7.txt sample/USER1_8.txt
+MA4 sample/USER2_1.txt
+MB5 sample/USER2_1.txt sample/USER2_2.txt sample/USER2_3.txt sample/USER2_4.txt
+MC6 sample/USER2_1.txt sample/USER2_2.txt sample/USER2_3.txt sample/USER2_4.txt sample/USER2_5.txt sample/USER2_6.txt sample/USER2_7.txt sample/USER2_8.txt
+
+MA7 sample/USER3_1.txt
+MB8 sample/USER3_1.txt sample/USER3_2.txt sample/USER3_3.txt sample/USER3_4.txt
+MC9 sample/USER3_1.txt sample/USER3_2.txt sample/USER3_3.txt sample/USER3_4.txt sample/USER3_5.txt sample/USER3_6.txt sample/USER3_7.txt sample/USER3_8.txt
+
+MA10 sample/USER4_1.txt
+MB11 sample/USER4_1.txt sample/USER4_2.txt sample/USER4_3.txt sample/USER4_4.txt
+MC12 sample/USER4_1.txt sample/USER4_2.txt sample/USER4_3.txt sample/USER4_4.txt sample/USER4_5.txt sample/USER4_6.txt sample/USER4_7.txt sample/USER4_8.txt
+
+MA13 sample/USER5_1.txt
+MB14 sample/USER5_1.txt sample/USER5_2.txt sample/USER5_3.txt sample/USER5_4.txt
+MC15 sample/USER5_1.txt sample/USER5_2.txt sample/USER5_3.txt sample/USER5_4.txt sample/USER5_5.txt sample/USER5_6.txt sample/USER5_7.txt sample/USER5_8.txt

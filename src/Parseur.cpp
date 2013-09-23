@@ -7,7 +7,7 @@ list<Sign*>  parse (string filename)
 {
     list<Sign*> listSign;
     string line;
-    ifstream file(filename);
+    ifstream file(filename.c_str());
 
     if (file)
     {
@@ -16,6 +16,8 @@ list<Sign*>  parse (string filename)
 	    string username;
 	    size_t j = 0;
 	    int i = 0;
+	    if (line == "")
+		continue;
 	    while ((j = line.find(' ')) != string::npos)
 	    {
 		// set username
@@ -27,7 +29,7 @@ list<Sign*>  parse (string filename)
 		    Sign* sign = parseFile(tempFileName, username);
 		    if (sign == NULL)
 			cerr << "File " << tempFileName
-			    << " error" <<endl;
+			    << " signature error" <<endl;
 		    else
 			listSign.push_back(sign);
 		}
@@ -37,7 +39,7 @@ list<Sign*>  parse (string filename)
 	    Sign* sign = parseFile(line, username);
 	    if (sign == NULL)
 		cerr << "File " << line
-		    << " error" <<endl;
+		    << " signature error" <<endl;
 	    else
 		listSign.push_back(sign);
 	}
@@ -45,7 +47,7 @@ list<Sign*>  parse (string filename)
     }
     else
     {
-	cerr << "Cannot open file " << filename << endl;
+	cerr << "File " << filename << " not found" << endl;
     }
 
     return listSign;
@@ -58,10 +60,17 @@ Sign*	parseFile (string filename, string user)
 {
     list<VecParam> listVP;
     string line;
-    ifstream file (filename);
+    ifstream file (filename.c_str());
     Sign *signature = NULL;
 
-    if (file)
+    cout << filename << endl;
+
+    if (!file.is_open())
+    {
+	cout << "File " << filename << " not found" << endl;
+	return signature;
+    }
+    else
     {
 	// skip the first line
 	// because contains number of points of the signature
@@ -108,6 +117,8 @@ TestObj*  parseTrt (string filename)
 	while (getline(file, line))
 	{
 	    int j = 0;
+	    if (line == "")
+		continue;
 	    if ((j = line.find(' ')) != string::npos)
 	    {
 		string tempFileName = line.substr(0, j);
@@ -126,6 +137,10 @@ TestObj*  parseTrt (string filename)
 	}
 	file.close();
 	testingObj = new TestObj(tests);
+    }
+    else
+    {
+	cout << "File " << filename << " not found" << endl;
     }
 
     return testingObj;
