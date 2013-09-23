@@ -1,9 +1,8 @@
-#include <cassert>
 #include "Model.hh"
 
 Model::Model(id_type id, Signatures& signatures)
     : id_ (id)
-    , ref_sign_ ()
+    , ref_sign_ (id)
     , signatures_ (signatures)
 {
     int model_size = NORMA_SIZE; // should be 25
@@ -13,7 +12,7 @@ Model::Model(id_type id, Signatures& signatures)
 	return;
     else if (nb_signatures == 1)
     {
-	ref_sign_ = Sign(*signatures.front());
+        ref_sign_ = Sign((*signatures.begin())->get_datas(), id);
 	return;
     }
 

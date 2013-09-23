@@ -4,8 +4,10 @@
 # include "VecParam.hh"
 # include <list>
 # include <string>
+# include <limits.h>
 # include <vector>
 # include <map>
+# include <set>
 
 # define NORMA_SIZE 25
 
@@ -33,6 +35,7 @@ class Sign
 
 	// utils
 	void normalize();
+	int find_tmin();
 	int find_tmax();
 	VecParam norma_vect(list<VecParam>& list_v);
 	void print();

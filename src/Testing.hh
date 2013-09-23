@@ -6,6 +6,7 @@
 # include "VecParam.hh"
 # include <math.h>
 # include <limits.h>
+# include <float.h>
 # include <stdlib.h>
 # include "Parseur.hh"
 

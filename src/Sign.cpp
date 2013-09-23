@@ -59,6 +59,23 @@ Sign::add_data(VecParam v)
 }
 
 int
+Sign::find_tmin()
+{
+  list<VecParam>::iterator it = datas_.begin();
+  int tmin = INT_MAX;
+
+  for (it = datas_.begin(); it != datas_.end(); it++)
+  {
+    int ttemp = it->get_timeStamp();
+
+    if (ttemp < tmin)
+      tmin = ttemp;
+  }
+
+  return tmin;
+}
+
+int
 Sign::find_tmax()
 {
     list<VecParam>::iterator it = datas_.begin();
@@ -78,43 +95,38 @@ Sign::find_tmax()
 void
 Sign::normalize()
 {
-    map<int, list<VecParam> > vecs_origin;
+  int time_min = find_tmin();
+  int time_max = find_tmax();
+  int duration = time_max - time_min;
+  int slice = (duration / NORMA_SIZE);
 
-    int time_max = find_tmax();
+  vector<list<VecParam> > slices(NORMA_SIZE);
 
-    if (time_max > NORMA_SIZE)
+  // split the list of entries into NORMA_SIZE sublists
+  list<VecParam>::iterator it;
+  for (it = datas_.begin(); it != datas_.end(); it++)
+  {
+    VecParam elt = (*it);
+    int timeStamp = elt.get_timeStamp();
+    int index = (timeStamp - time_min) / slice;
+    if (index == NORMA_SIZE)
+      index--;
+
+    slices[index].push_back(elt);
+  }
+
+  // normalize each VecParam and update datas_
+  datas_.clear();
+  for (int i = 0; i < slices.size(); i++)
+  {
+    int slice_size = slices[i].size();
+    if (slice_size == 0)
     {
-	double slice = ((double)time_max /
-			(double)(NORMA_SIZE - 1));
-
-	list<VecParam>::iterator it = datas_.begin();
-	map<int, list<VecParam> >::iterator it_place;
-
-
-	for (it = datas_.begin(); it != datas_.end(); it++)
-	{
-	    double place = (double)it->get_timeStamp() / slice;
-
-	    it_place = vecs_origin.find(place);
-
-	    if (it_place == vecs_origin.end())
-		vecs_origin[place] = list<VecParam>();
-
-	    vecs_origin[place].push_back(*it);
-	}
-
-	list<VecParam> new_datas;
-
-	for (int i = 0; i < NORMA_SIZE; i++)
-	{
-	    it_place = vecs_origin.find(i);
-
-	    if (it_place != vecs_origin.end())
-		new_datas.push_back(norma_vect(it_place->second));
-	}
-
-	datas_ = new_datas;
+      cerr << "Warning: normalized signature of " << id_
+	   << ": line number " << (i + 1) << " is wrong..." << endl;
     }
+    datas_.push_back(norma_vect(slices[i]));
+  }
 }
 
 VecParam
