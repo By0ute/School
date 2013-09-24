@@ -230,10 +230,12 @@ Trt::find_friends()
 {
     axes_bounding();
 
+    // creates a black picture to only draw bars
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
     Scalar color_axe= Scalar(100, 0, 255);
     Scalar color_bounding = Scalar(255, 255, 0);
     Scalar color_text = Scalar(255, 255, 255);
+    // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
@@ -242,23 +244,29 @@ Trt::find_friends()
 
     for (int i = 0; i < axes_.size(); i++)
     {
+
+	// Just to see what is tested on picture to debug
+	//
+	// draw inner line
 	line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
 
+	// draw bounding box
 	for (int j = 0; j < 4; j++)
 	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
 		 color_bounding, 1, 8);
 
+	Point p1_1 = axes_[i].p1_;
+	Point p1_2 = axes_[i].p2_;
 
-	Point p1 = axes_[i].p1_;
-
-	Point p(p1.x, p1.y + i);
-	ostringstream oss;
-	oss << i;
-	putText(mat_res, oss.str(), p, fontFace, fontScale,
+	Point p(p1_1.x, p1_1.y);
+	// draw the txt : nb of item
+	putText(mat_res, key_str_axe(axes_[i]), p, fontFace, fontScale,
 		color_text, thickness, 8);
+
+	// end of debug
 
 	set<Axe> tmp;
 	tmp.insert(axes_[i]);
@@ -267,10 +275,13 @@ Trt::find_friends()
 	{
 	    if (j != i)
 	    {
-		Point p2 = axes_[j].p1_;
-		int dist = distance(p1, p2);
+		Point p2_1 = axes_[j].p1_;
+		Point p2_2 = axes_[j].p2_;
+		int dist1 = distance(p1_1, p2_1);
+		int dist2 = distance(p1_2, p2_2);
 
-		if (dist <= 20) // distance droite
+		if ((abs(dist1 - dist2) <= 20) &&
+		    ((dist1 <= 50) || (dist2 <= 50)))
 		    tmp.insert(axes_[j]);
 
 		// check distance diago
@@ -286,20 +297,24 @@ Trt::find_friends()
     vector<set<Axe> >::iterator it;
     vector<set<Axe> >::iterator jt;
 
-    for (it = friends.begin(); it != friends.end(); it++)
+    // remove doublons and regroup sets
+    for (jt = friends.begin(); jt != friends.end(); jt++)
     {
-	for (jt = friends.begin(); jt != friends.end(); jt++)
+	it = friends.begin();
+	while (it != friends.end())
 	{
-	    if (jt != it)
+	    if (it != jt)
 	    {
-		if (is_doublon(*it, *jt))
+		if (is_doublon(*jt, *it))
 		{
-		    cout << "jai un doublon" << endl;
-		    it->insert(jt->begin(), jt->end());
-		    friends.erase(jt);
-		    jt = friends.begin();
+		    jt->insert(it->begin(), it->end());
+		    friends.erase(it);
 		}
+		else
+		    it++;
 	    }
+	    else
+		it++;
 	}
     }
 
@@ -308,7 +323,8 @@ Trt::find_friends()
 
     set_friends(friends);
 
-    print_friends();
+
+    //print_friends();
 
     return (mat_res);
 }
@@ -560,21 +576,29 @@ parallel_axes(Axe a1, Axe a2)
 bool
 is_doublon(set<Axe> s1, set<Axe> s2)
 {
-    bool res = false;
     set<Axe>::iterator it;
 
-    for (Axe a : s2)
+    for (Axe a1 : s1)
     {
-	it = s1.find(a);
-
-	if (it != s1.end())
+	for (Axe a2 : s2)
 	{
-	    res = true;
-	    break;
+	    if (a1.p1_.x == a2.p1_.x &&
+		a1.p1_.y == a2.p1_.y &&
+		a1.p2_.x == a2.p2_.x &&
+		a1.p2_.y == a2.p2_.y)
+		return true;
 	}
     }
 
-    return res;
+    return false;
+}
+
+string
+key_str_axe(Axe a)
+{
+    ostringstream oss;
+    oss << (a.p1_.x + a.p1_.y + a.p2_.x + a.p2_.y);
+    return oss.str();
 }
 
 

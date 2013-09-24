@@ -11,9 +11,11 @@
 # include <map>
 # include <math.h>
 # include <sstream>
+# include <stdlib.h>
 
 # include "Axe.hh"
-//# include <stdlib>
+
+# define MAJO_ROTATEDRECT 20
 
 using namespace cv;
 using namespace std;
@@ -81,6 +83,8 @@ void print_axe(Axe a);
 int parallel_axes(Axe a1, Axe a2);
 
 bool is_doublon(set<Axe> s1, set<Axe> s2);
+
+string key_str_axe(Axe a);
 
 
 
