@@ -98,7 +98,7 @@ Sign::normalize()
   int time_min = find_tmin();
   int time_max = find_tmax();
   int duration = time_max - time_min;
-  int slice = (duration / NORMA_SIZE);
+  double slice = (duration / NORMA_SIZE);
 
   vector<list<VecParam> > slices(NORMA_SIZE);
 
@@ -109,7 +109,7 @@ Sign::normalize()
     VecParam elt = (*it);
     int timeStamp = elt.get_timeStamp();
     int index = (timeStamp - time_min) / slice;
-    if (index == NORMA_SIZE)
+    if (index >= NORMA_SIZE)
       index--;
 
     slices[index].push_back(elt);
