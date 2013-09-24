@@ -70,6 +70,12 @@ Trt::get_contours() const
     return contours_;
 }
 
+vector<RotatedRect>
+Trt::get_rects() const
+{
+    return rects_;
+}
+
 
 
 /* -------------- */
@@ -133,9 +139,6 @@ Trt::contours_bounding()
     vector<vector<Point> > contours; //all contours of white shapes
     vector<Vec4i> hierarchy; //hierarchy of the contours
     Mat res = Mat::zeros(mat_.size(), CV_8UC3); //result image
-    Scalar color_contours = Scalar(255, 0, 0); //color for the contours (BLUE)
-    Scalar color_bounding = Scalar(255, 255, 0); //color for the
-						//bounding boxes (YELLOW)
 
     // find the contours of white shapes in original picture
     findContours(mat_, contours, hierarchy, CV_RETR_EXTERNAL,
@@ -149,7 +152,7 @@ Trt::contours_bounding()
     for (it = contours.begin(); it < contours.end(); it++)
     {
 	drawContours(res, contours, place,
-		     color_contours, 0, CV_AA);
+		     BLUE, 0, CV_AA);
 
 	RotatedRect rec = rect_bar(*it);
 
@@ -163,7 +166,7 @@ Trt::contours_bounding()
 	    place++;
 	    for (int j = 0; j < 4; j++)
 		line(res, rect_points[j], rect_points[(j+1)%4],
-		     color_bounding, 1, 8);
+		     YELLOW, 1, 8);
 	}
 	else
 	{
@@ -176,7 +179,7 @@ Trt::contours_bounding()
     set_contours(contours);
     set_rects(rects);
     //print_contours();
-    set_mat(res);
+    //set_mat(res);
 
     return res;
 }
@@ -193,10 +196,6 @@ Trt::axes_bounding()
     contours_bounding();
 
     vector<Axe> axes;
-    // YELLOW
-    Scalar color_bounding = Scalar(255, 255, 0);
-    // PINK
-    Scalar color_axe= Scalar(100, 0, 255);
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
 
     for (int i = 0; i < contours_.size(); i++)
@@ -209,13 +208,13 @@ Trt::axes_bounding()
 
 	for (int j = 0; j < 4; j++)
 	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 color_bounding, 1, 8);
+		 YELLOW, 1, 8);
 
-	line(mat_res, axes[i].p1_, axes[i].p2_, color_axe, 1, 8, 0);
+	line(mat_res, axes[i].p1_, axes[i].p2_, PINK, 1, 8, 0);
     }
 
     set_axes(axes);
-    set_mat(mat_res);
+    //set_mat(mat_res);
     return mat_res;
 }
 
@@ -232,8 +231,6 @@ Trt::find_friends()
 
     // creates a black picture to only draw bars
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
-    Scalar color_axe= Scalar(100, 0, 255);
-    Scalar color_bounding = Scalar(255, 255, 0);
     // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
 
@@ -247,7 +244,7 @@ Trt::find_friends()
 	// Just to see what is tested on picture to debug
 	//
 	// draw inner line
-	line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
+	line(mat_res, axes_[i].p1_, axes_[i].p2_, PINK, 1, 8, 0);
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
@@ -255,7 +252,7 @@ Trt::find_friends()
 	// draw bounding box
 	for (int j = 0; j < 4; j++)
 	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 color_bounding, 1, 8);
+		 YELLOW, 1, 8);
 
 	Point p1_1 = axes_[i].p1_;
 	Point p1_2 = axes_[i].p2_;
@@ -325,20 +322,20 @@ Trt::find_friends()
     set_friends(friends);
     set_rects(rects);
 
-    cout << "Size : " << friends_.size() << endl;
-    cout << "Size rects " << rects_.size() << endl;
+    //cout << "Size : " << friends_.size() << endl;
+    //cout << "Size rects " << rects_.size() << endl;
 
 
-    for (RotatedRect r : rects_)
-    {
-	Point2f rect_points[4];
-	r.points(rect_points);
+    //for (RotatedRect r : rects_)
+    //{
+	//Point2f rect_points[4];
+	//r.points(rect_points);
 
-	// draw bounding box
-	for (int j = 0; j < 4; j++)
-	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 GREEN, 1, 8);
-    }
+	//// draw bounding box
+	//for (int j = 0; j < 4; j++)
+	    //line(mat_res, rect_points[j], rect_points[(j+1)%4],
+		 //GREEN, 1, 8);
+    //}
 
 
 
@@ -351,6 +348,106 @@ Trt::find_friends()
     //print_friends();
 
     return (mat_res);
+}
+
+Mat
+Trt::extract_deskew(RotatedRect& r)
+{
+    Mat Extract, Deskew, Cropped;
+
+    float angle = r.angle;
+    Size r_size = r.size;
+
+    if (r.angle < -45.)
+    {
+	angle += 90.0;
+	swap(r_size.width, r_size.height);
+    }
+
+    Extract = getRotationMatrix2D(r.center, angle, 1.0);
+    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_CUBIC);
+
+    getRectSubPix(Deskew, r_size, r.center, Cropped);
+
+    return Cropped;
+}
+
+
+
+//// TEMPORARY
+
+
+
+Mat
+Trt::extract_deskew2(Mat& in)
+{
+    RotatedRect r = rects_[0];
+
+    Mat Extract, Deskew, Cropped;
+
+    float angle = r.angle;
+    Size r_size = r.size;
+
+    if (r.angle < -45.)
+    {
+	angle += 90.0;
+	swap(r_size.width, r_size.height);
+    }
+
+    Extract = getRotationMatrix2D(r.center, angle, 1.0);
+    warpAffine(in, Deskew, Extract, in.size(), INTER_CUBIC);
+
+    getRectSubPix(Deskew, r_size, r.center, Cropped);
+
+    //return Extract;
+    return Cropped;
+}
+
+
+// TEMPORARY
+
+
+
+
+Mat&
+Trt::print_results(Mat& src)
+{
+    find_friends();
+
+    int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
+    double fontScale = 3;
+    int thickness = 5;
+
+    for (RotatedRect r : rects_)
+    {
+	Point2f rect_points[4];
+	r.points(rect_points);
+
+	Point p(rect_points[2].x,
+		rect_points[2].y +
+		((rect_points[1].y - rect_points[2].y) / 3 * 2));
+
+	// draw bounding box
+	//if (decode(r))
+	//{
+	//for (int j = 0; j < 4; j++)
+	//line(src, rect_points[j], rect_points[(j+1)%4],
+	//GREEN, 10, 8);
+	//}
+	//else
+	//{
+	    for (int j = 0; j < 4; j++)
+		line(src, rect_points[j], rect_points[(j+1)%4],
+		     RED, 10, 8);
+
+
+	    putText(src, "FAUX CODE", p, fontFace, fontScale,
+		    RED, thickness, 8);
+	    //}
+
+    }
+
+    return src;
 }
 
 
@@ -650,8 +747,8 @@ create_rotated_rect(set<Axe>& s)
     }
 
     RotatedRect res = minAreaRect(points);
-    res.size.height += 20;
-    res.size.width += 20;
+    res.size.height += (res.size.height * 0.05);
+    res.size.width += (res.size.width * 0.05);
 
     return (res);
 }

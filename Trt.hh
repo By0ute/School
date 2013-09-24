@@ -21,6 +21,8 @@
 # define BLUE Scalar(255, 0, 0)
 # define GREEN Scalar(0, 255, 0)
 # define RED Scalar(0, 0, 255)
+# define PINK Scalar(100, 0, 255)
+# define YELLOW Scalar(255, 255, 0)
 
 using namespace cv;
 using namespace std;
@@ -42,6 +44,9 @@ class Trt
 	    Mat contours_bounding();
 	    Mat axes_bounding();
 	    Mat find_friends();
+	    Mat& print_results(Mat& src);
+	    Mat extract_deskew(RotatedRect& r);
+	    Mat extract_deskew2(Mat& in);
 
 	    // utils
 	    void print_contours();
@@ -50,6 +55,7 @@ class Trt
 	    // getters setters
 	    Mat get_mat() const;
 	    vector<vector<Point> > get_contours() const;
+	    vector<RotatedRect> get_rects() const;
 
 	    void set_mat(Mat m);
 	    void set_contours(vector<vector<Point> > c);
