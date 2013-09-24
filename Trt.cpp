@@ -58,14 +58,14 @@ Trt::~Trt()
 /* -------------- */
 // mat_
 Mat
-Trt::get_mat()
+Trt::get_mat() const
 {
     return mat_;
 }
 
 // contours_
 vector<vector<Point> >
-Trt::get_contours()
+Trt::get_contours() const
 {
     return contours_;
 }
@@ -234,7 +234,6 @@ Trt::find_friends()
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
     Scalar color_axe= Scalar(100, 0, 255);
     Scalar color_bounding = Scalar(255, 255, 0);
-    Scalar color_text = Scalar(255, 255, 255);
     // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
 
@@ -264,7 +263,7 @@ Trt::find_friends()
 	Point p(p1_1.x, p1_1.y);
 	// draw the txt : nb of item
 	putText(mat_res, key_str_axe(axes_[i]), p, fontFace, fontScale,
-		color_text, thickness, 8);
+		WHITE, thickness, 8);
 
 	// end of debug
 
@@ -318,10 +317,35 @@ Trt::find_friends()
 	}
     }
 
+    vector<RotatedRect> rects;
 
-    cout << "Size : " << friends.size() << endl;
+    for (set<Axe> s : friends)
+	rects.push_back(create_rotated_rect(s));
 
     set_friends(friends);
+    set_rects(rects);
+
+    cout << "Size : " << friends_.size() << endl;
+    cout << "Size rects " << rects_.size() << endl;
+
+
+    for (RotatedRect r : rects_)
+    {
+	Point2f rect_points[4];
+	r.points(rect_points);
+
+	// draw bounding box
+	for (int j = 0; j < 4; j++)
+	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
+		 GREEN, 1, 8);
+    }
+
+
+
+    //
+    //
+    //for (set<Axe> s : friends)
+    //cout << "-> " << s.size() << endl;
 
 
     //print_friends();
@@ -389,7 +413,7 @@ Trt::print_friends()
 /* ------------------ */
 // 2 4 3-5 AXE
 Axe
-points_axe(vector<Point> v)
+points_axe(vector<Point>& v)
 {
     int max_y = 0;
     int max_x = 0;
@@ -435,7 +459,7 @@ points_axe(vector<Point> v)
 /* ------------------ */
 /* ------------------ */
 Axe
-rect_axe(RotatedRect r)
+rect_axe(RotatedRect& r)
 {
     Point2f r_pts[4];
     r.points(r_pts);
@@ -470,7 +494,7 @@ rect_axe(RotatedRect r)
 /* ------------------ */
 /* ------------------ */
 RotatedRect
-rect_bar(vector<Point> vec)
+rect_bar(vector<Point>& vec)
 {
     RotatedRect rect = minAreaRect(vec);
 
@@ -495,7 +519,20 @@ rect_bar(vector<Point> vec)
 /* ------------------ */
 /* ------------------ */
 int
-distance(Point p1, Point p2)
+distance(Point& p1, Point& p2)
+{
+    int x1 = p1.x;
+    int y1 = p1.y;
+    int x2 = p2.x;
+    int y2 = p2.y;
+    int res1 = x2 - x1;
+    int res2 = y2 - y1;
+
+    return (sqrt ((res1*res1) + (res2*res2)));
+}
+
+int
+distance(Point2f& p1, Point2f& p2)
 {
     int x1 = p1.x;
     int y1 = p1.y;
@@ -514,7 +551,7 @@ distance(Point p1, Point p2)
 /* ------------------ */
 /* ------------------ */
 vector<vector<Point> >
-make_vector(map<int, vector<Point> > m)
+make_vector(map<int, vector<Point> >& m)
 {
     vector<vector<Point> > vec;
     map<int, vector<Point> >::iterator it;
@@ -527,7 +564,7 @@ make_vector(map<int, vector<Point> > m)
 
 
 vector<Rect>
-make_boundings(map<int, vector<Point> > m, vector<Rect> b)
+make_boundings(map<int, vector<Point> >& m, vector<Rect>& b)
 {
     vector<Rect> res;
     map<int, vector<Point> >::iterator it;
@@ -539,14 +576,14 @@ make_boundings(map<int, vector<Point> > m, vector<Rect> b)
 }
 
 void
-print_point(Point p, int i)
+print_point(Point& p, int& i)
 {
     cout << "Point " << i << " (" << p.x;
     cout << ", " << p.y << ")";// << endl;
 }
 
 void
-print_axe(Axe a)
+print_axe(Axe& a)
 {
     int x1 = a.p1_.x;
     int x2 = a.p2_.x;
@@ -559,7 +596,7 @@ print_axe(Axe a)
 
 
 int
-parallel_axes(Axe a1, Axe a2)
+parallel_axes(Axe& a1, Axe& a2)
 {
     int x1 = a1.p1_.x;
     int y1 = a1.p1_.y;
@@ -574,7 +611,7 @@ parallel_axes(Axe a1, Axe a2)
 }
 
 bool
-is_doublon(set<Axe> s1, set<Axe> s2)
+is_doublon(set<Axe>& s1, set<Axe>& s2)
 {
     set<Axe>::iterator it;
 
@@ -594,11 +631,29 @@ is_doublon(set<Axe> s1, set<Axe> s2)
 }
 
 string
-key_str_axe(Axe a)
+key_str_axe(Axe& a)
 {
     ostringstream oss;
     oss << (a.p1_.x + a.p1_.y + a.p2_.x + a.p2_.y);
     return oss.str();
+}
+
+RotatedRect
+create_rotated_rect(set<Axe>& s)
+{
+    vector<Point> points;
+
+    for (Axe a : s)
+    {
+	points.push_back(a.p1_);
+	points.push_back(a.p2_);
+    }
+
+    RotatedRect res = minAreaRect(points);
+    res.size.height += 20;
+    res.size.width += 20;
+
+    return (res);
 }
 
 
