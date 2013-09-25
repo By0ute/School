@@ -14,6 +14,7 @@
 # include <stdlib.h>
 
 # include "Axe.hh"
+# include "BarCodeTrt.hh"
 
 # define MAJO_ROTATEDRECT 20
 # define WHITE Scalar(255, 255, 255)
@@ -45,8 +46,8 @@ class Trt
 	    Mat axes_bounding ();
 	    Mat find_friends ();
 	    Mat& print_results (Mat& src);
-	    Mat extract_deskew (RotatedRect& r);
-	    Mat extract_deskew2 (Mat& in);
+	    //Mat extract_deskew (RotatedRect& r);
+	    vector<int> extract_deskew (RotatedRect& r);
 	    Mat subtreatment (Mat& cropped, RotatedRect& box);
 
 	    // utils

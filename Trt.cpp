@@ -320,16 +320,6 @@ Trt::find_friends()
     for (set<Axe> s : friends)
 	rects.push_back(create_rotated_rect(s));
 
-    //for (it_rect = rects_.begin(), it = friends_.begin();
-    //it_rect != rects_.end(), it != friends_.end();
-    //it_rect++, it++)
-    //while ()
-    //{
-    //	
-    //}
-
-
-
     set_friends(friends);
     set_rects(rects);
 
@@ -362,7 +352,7 @@ Trt::find_friends()
     return (mat_res);
 }
 
-Mat
+vector<int>
 Trt::extract_deskew(RotatedRect& r)
 {
     Mat Extract, Deskew, Cropped;
@@ -377,129 +367,29 @@ Trt::extract_deskew(RotatedRect& r)
     }
 
     Extract = getRotationMatrix2D(r.center, angle, 1.0);
-    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_CUBIC);
+    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_LINEAR);
 
     getRectSubPix(Deskew, r_size, r.center, Cropped);
 
-    return Cropped;
-}
+    r_size = Cropped.size();
 
-
-
-//// TEMPORARY
-
-
-
-Mat
-Trt::extract_deskew2(Mat& in)
-{
-    if (rects_.size() > 0)
+    if (r_size.width < r_size.height)
     {
-	RotatedRect r = rects_[0];
-
-	Mat Extract, Deskew, Cropped;
-
-	float angle = r.angle;
-	Size r_size = r.size;
-
-	if (r.angle < -45.)
-	{
-	    angle += 90.0;
-	    swap(r_size.width, r_size.height);
-	}
-
-	Extract = getRotationMatrix2D(r.center, angle, 1.0);
-	warpAffine(in, Deskew, Extract, in.size(), INTER_LINEAR);
-
-	getRectSubPix(Deskew, r_size, r.center, Cropped);
-
-	r_size = Cropped.size();
-
-	if (r_size.width < r_size.height)
-	{
-	    Point2f center(Cropped.rows / 2.0f, Cropped.cols / 2.0f);
-	    Mat rot_mat = getRotationMatrix2D(center, -90, 0.7);
-	    Mat dst;
-	    Size size_swap(Cropped.size().height, Cropped.size().width);
-	    warpAffine(Cropped, dst, rot_mat, size_swap);
-	    Cropped = dst;
-	}
-
-	Mat soluce;
-
-	//Mat element = getStructuringElement(MORPH_RECT,
-	//Size(20,20), Point(-1,-1));
-
-	//morphologyEx(Cropped, soluce, MORPH_BLACKHAT, element);
-
-	//threshold(soluce, soluce, 127, 255, THRESH_BINARY);
-	threshold(Cropped, soluce, 100, 255, THRESH_BINARY);
-
-	//Cropped = subtreatment(Cropped, r);
-
-	//return Cropped;
-	//Size s = soluce.size();
-	//cout << s.width << endl;
-	//cout << s.height << endl;
-
-	return soluce;
+	Point2f center(Cropped.rows / 2.0f, Cropped.cols / 2.0f);
+	Mat rot_mat = getRotationMatrix2D(center, -90, 0.7);
+	Mat dst;
+	Size size_swap(Cropped.size().height, Cropped.size().width);
+	warpAffine(Cropped, dst, rot_mat, size_swap);
+	Cropped = dst;
     }
 
-    return in;
+    Mat soluce;
+
+    threshold(Cropped, soluce, 100, 255, THRESH_BINARY);
+    vector<int> results = barCodeTrt(soluce);
+
+    return results;
 }
-
-Mat
-Trt::subtreatment(Mat& cropped, RotatedRect& box)
-{
-    Mat lol = cropped.clone();
-    vector<Vec4i> lines;
-    Size size = cropped.size();
-
-    HoughLinesP(cropped, lines, 1, CV_PI / 180, size.width / 2.f, 20);
-    Mat disp_lines(size, CV_8UC1, BLACK);
-
-    double angle = 0;
-
-    unsigned nb_lines = lines.size();
-
-    for (int i = 0; i < nb_lines; i++)
-    {
-	line(disp_lines, Point(lines[i][0], lines[i][1]),
-	     Point(lines[i][2], lines[i][3]), BLUE);
-
-	angle += atan2((double)lines[i][3] - lines[i][1],
-		       (double)lines[i][2] - lines[i][0]);
-    }
-
-    angle /= nb_lines;
-
-    // redo the rotation
-    //RotatedRect box = minAreaRect(cropped);
-    Mat rot_mat = getRotationMatrix2D(box.center, angle, 1);
-
-    Mat rotated;
-    warpAffine(cropped, rotated, rot_mat, cropped.size(), INTER_CUBIC);
-
-    Size box_size = box.size;
-
-    if (box.angle < -45.)
-	swap(box_size.width, box_size.height);
-
-    Mat res;
-
-    getRectSubPix(rotated, box_size, box.center, res);
-
-
-    cout << "angle = " << angle * 180 / CV_PI << endl;
-
-    return res;
-}
-
-
-// TEMPORARY
-
-
-
 
 Mat&
 Trt::print_results(Mat& src)
@@ -507,8 +397,8 @@ Trt::print_results(Mat& src)
     find_friends();
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
-    double fontScale = 3;
-    int thickness = 5;
+    double fontScale = 2;
+    int thickness = 3;
 
     for (RotatedRect r : rects_)
     {
@@ -519,23 +409,42 @@ Trt::print_results(Mat& src)
 		rect_points[2].y +
 		((rect_points[1].y - rect_points[2].y) / 3 * 2));
 
-	// draw bounding box
-	//if (decode(r))
-	//{
-	//for (int j = 0; j < 4; j++)
-	//line(src, rect_points[j], rect_points[(j+1)%4],
-	//GREEN, 10, 8);
-	//}
-	//else
-	//{
+	vector<int> res = extract_deskew(r);
+	vector<int>::iterator it = res.begin();
+
+	for (it = res.begin(); it != res.end(); it++)
+	{
+	    if (*it == -1)
+		break;
+	}
+
+	if (it == res.end())
+	{
+	    string text = "";
+
+	    for (int i = 0; i < res.size(); i++)
+	    {
+		ostringstream oss;
+		oss << res[i];
+		text += oss.str();
+	    }
+
+	    // draw bounding box
+	    for (int j = 0; j < 4; j++)
+		line(src, rect_points[j], rect_points[(j+1)%4],
+		     GREEN, 10, 8);
+
+
+
+	    putText(src, text, p, fontFace, fontScale,
+		    GREEN, thickness, 8);
+	}
+	else
+	{
 	    for (int j = 0; j < 4; j++)
 		line(src, rect_points[j], rect_points[(j+1)%4],
 		     RED, 10, 8);
-
-
-	    putText(src, "FAUX CODE", p, fontFace, fontScale,
-		    RED, thickness, 8);
-	    //}
+	}
 
     }
 
