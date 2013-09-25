@@ -12,9 +12,9 @@ using namespace cv;
 
 namespace Pretrt
 {
-	    Mat color2Gray(Mat& in);
-	    Mat blackHat(Mat& in);
-	    Mat binarize(Mat& in);
+	    Mat color2Gray(Mat in);
+	    Mat blackHat(Mat in);
+	    Mat binarize(Mat in);
 
 }
 

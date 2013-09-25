@@ -12,7 +12,8 @@
 /* -------------- */
 /* -------------- */
 Trt::Trt()
-    : mat_ (),
+    :
+	mat_ (),
     contours_ (),
     axes_ (),
     friends_ (),
@@ -21,19 +22,22 @@ Trt::Trt()
 }
 
 Trt::Trt(Mat m)
-    : mat_ (m.clone()),
-    contours_ (),
-    axes_ (),
-    friends_ (),
-    rects_ ()
+    :
+	mat_ (m.clone()),
+	contours_ (),
+	axes_ (),
+	friends_ (),
+	rects_ ()
 {
 }
 
 Trt::Trt(Mat m, vector<vector <Point> > c,
+	 //Trt::Trt(vector<vector <Point> > c,
 	 vector<Axe> a,
 	 vector<set<Axe> > f,
 	 vector<RotatedRect> r)
-    : mat_ (m.clone()),
+    :
+    mat_ (m.clone()),
     contours_ (c),
     axes_ (a),
     friends_ (f),
@@ -135,12 +139,13 @@ Trt::set_rects(vector<RotatedRect> r)
 Mat
 Trt::contours_bounding()
 {
+    Mat mat_contours = mat_.clone();
     vector<vector<Point> > contours; //all contours of white shapes
     vector<Vec4i> hierarchy; //hierarchy of the contours
     Mat res = Mat::zeros(mat_.size(), CV_8UC3); //result image
 
     // find the contours of white shapes in original picture
-    findContours(mat_, contours, hierarchy, CV_RETR_EXTERNAL,
+    findContours(mat_contours, contours, hierarchy, CV_RETR_EXTERNAL,
 	     CV_CHAIN_APPROX_SIMPLE);
 
 
@@ -177,8 +182,6 @@ Trt::contours_bounding()
     // set the new parameters in the object for a future use
     set_contours(contours);
     set_rects(rects);
-    //print_contours();
-    //set_mat(res);
 
     return res;
 }
@@ -199,7 +202,6 @@ Trt::axes_bounding()
 
     for (int i = 0; i < contours_.size(); i++)
     {
-	//axes.push_back(points_axe(contours_[i]));
 	axes.push_back(rect_axe(rects_[i]));
 
 	Point2f rect_points[4];
@@ -213,7 +215,6 @@ Trt::axes_bounding()
     }
 
     set_axes(axes);
-    //set_mat(mat_res);
     return mat_res;
 }
 
@@ -384,7 +385,8 @@ Trt::extract_deskew(RotatedRect& r, Mat& Cropped)
 
     Mat soluce;
 
-    threshold(Cropped, soluce, 100, 255, THRESH_BINARY);
+    threshold(Cropped, soluce, 127, 255, THRESH_BINARY);
+    Cropped = soluce;
     vector<int> results = barCodeTrt(soluce);
 
     return results;
@@ -749,10 +751,6 @@ create_rotated_rect(set<Axe>& s)
     RotatedRect res = minAreaRect(points);
     res.size.height += (res.size.height * 0.05);
     res.size.width += (res.size.width * 0.05);
-
-    //vector<Vec4i> lines;
-    //
-    //HoughLinesP(res, lines, 1, CV_PI / 180, 100, res.size.width / 2.f, 20);
 
     return (res);
 }

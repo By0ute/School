@@ -18,7 +18,6 @@ main (int argc,
     const char name_out[] = "Pretrt Picture";
     const char name_trt[] = "Trt Picture";
     const char name_test[] = "Test Cropped";
-    const char name_loul[] = "LOUL";
 
     Mat in;
     in = imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
@@ -29,34 +28,12 @@ main (int argc,
 	return EXIT_FAILURE;
     }
 
-    //Mat out = binarize(blackHat(color2Gray(in)));
     Mat out = binarize(in);
-    //Mat test = blackHat(in);
     Trt trt(out);
-    //trt.axes_bounding();
-    //Mat res = trt.get_mat();
-    //Mat res = trt.contours_bounding();
-    //trt.find_friends();
-    //Mat res = trt.axes_bounding();
-    //Mat res = trt.find_friends();
-    //Mat res1 = trt.find_friends();
-    // BarCode
-
-    // --------- Barcode TREATMENT -----
-    //vector<int> barCodeRes = barCodeTrt(out);
-    //for (int digit : barCodeRes)
-    //cout << digit << " ";
-    //cout << endl;
 
     Mat clone = in.clone();
     Mat test;
     Mat res = trt.print_results(clone, test);
-    //Mat test = trt.extract_deskew2(out);
-    //RotatedRect r = trt.get_rects().front;
-    //Mat test = trt.extract_deskew(trt.get_rects().front);
-
-    //trt.print_contours();
-    
 
     namedWindow(name_in, CV_WINDOW_NORMAL);
     cvMoveWindow(name_in, 100, 100);
@@ -74,9 +51,6 @@ main (int argc,
     cvMoveWindow(name_test, 100, 300);
     imshow(name_test, test);
 
-    namedWindow(name_loul, CV_WINDOW_NORMAL);
-    cvMoveWindow(name_loul, 450, 300);
-    imshow(name_loul, trt.get_mat());
 
     waitKey(0);
 
@@ -84,7 +58,6 @@ main (int argc,
     destroyWindow(name_in);
     destroyWindow(name_out);
     destroyWindow(name_trt);
-    destroyWindow(name_test);
     destroyWindow(name_test);
 
     return EXIT_SUCCESS;

@@ -3,7 +3,7 @@
 namespace Pretrt
 {
     // Change the image in color to gray
-    Mat color2Gray (Mat& in)
+    Mat color2Gray (Mat in)
     {
 	Mat res;
 
@@ -13,7 +13,7 @@ namespace Pretrt
     }
 
     // Top Hat transformation
-    Mat blackHat (Mat& in)
+    Mat blackHat (Mat in)
     {
 	Mat res;
 	Mat src = color2Gray(in);
@@ -26,7 +26,7 @@ namespace Pretrt
 	return res;
     }
 
-    Mat binarize (Mat& in)
+    Mat binarize (Mat in)
     {
 	Mat res;
 	Mat src = blackHat(in);
