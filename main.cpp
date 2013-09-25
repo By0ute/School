@@ -18,6 +18,7 @@ main (int argc,
     const char name_out[] = "Pretrt Picture";
     const char name_trt[] = "Trt Picture";
     const char name_test[] = "Test Cropped";
+    const char name_loul[] = "LOUL";
 
     Mat in;
     in = imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
@@ -30,7 +31,7 @@ main (int argc,
 
     //Mat out = binarize(blackHat(color2Gray(in)));
     Mat out = binarize(in);
-    //Mat out = blackHat(color2Gray(in));
+    //Mat test = blackHat(in);
     Trt trt(out);
     //trt.axes_bounding();
     //Mat res = trt.get_mat();
@@ -48,7 +49,8 @@ main (int argc,
     //cout << endl;
 
     Mat clone = in.clone();
-    Mat res = trt.print_results(clone);
+    Mat test;
+    Mat res = trt.print_results(clone, test);
     //Mat test = trt.extract_deskew2(out);
     //RotatedRect r = trt.get_rects().front;
     //Mat test = trt.extract_deskew(trt.get_rects().front);
@@ -68,9 +70,13 @@ main (int argc,
     cvMoveWindow(name_trt, 800, 100);
     imshow(name_trt, res);
 
-    //namedWindow(name_test, CV_WINDOW_NORMAL);
-    //cvMoveWindow(name_test, 400, 300);
-    //imshow(name_test, test);
+    namedWindow(name_test, CV_WINDOW_NORMAL);
+    cvMoveWindow(name_test, 100, 300);
+    imshow(name_test, test);
+
+    namedWindow(name_loul, CV_WINDOW_NORMAL);
+    cvMoveWindow(name_loul, 450, 300);
+    imshow(name_loul, trt.get_mat());
 
     waitKey(0);
 
@@ -78,6 +84,7 @@ main (int argc,
     destroyWindow(name_in);
     destroyWindow(name_out);
     destroyWindow(name_trt);
+    destroyWindow(name_test);
     destroyWindow(name_test);
 
     return EXIT_SUCCESS;

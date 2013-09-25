@@ -45,9 +45,9 @@ class Trt
 	    Mat contours_bounding ();
 	    Mat axes_bounding ();
 	    Mat find_friends ();
-	    Mat& print_results (Mat& src);
+	    Mat& print_results (Mat& src, Mat& Cropped);
 	    //Mat extract_deskew (RotatedRect& r);
-	    vector<int> extract_deskew (RotatedRect& r);
+	    vector<int> extract_deskew (RotatedRect& r, Mat& Cropped);
 	    Mat subtreatment (Mat& cropped, RotatedRect& box);
 
 	    // utils

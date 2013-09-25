@@ -128,8 +128,7 @@ Trt::set_rects(vector<RotatedRect> r)
 /* ------------------ */
 /* ------------------ */
 // this function finds contours of shapes defined by preatment
-// a polygon simplification is done on those contours
-// then boundings boxes are calculated for simplified contours
+// boundings boxes are calculated for simplified contours
 // a first selection is used to only selectionate bounding boxes with
 //    parameters between 2 and 5 (that corresponds to a bar of a code bar :
 //    2 for a really thin and 5 for a twisted rectangle one)
@@ -353,9 +352,9 @@ Trt::find_friends()
 }
 
 vector<int>
-Trt::extract_deskew(RotatedRect& r)
+Trt::extract_deskew(RotatedRect& r, Mat& Cropped)
 {
-    Mat Extract, Deskew, Cropped;
+    Mat Extract, Deskew;//, Cropped;
 
     float angle = r.angle;
     Size r_size = r.size;
@@ -367,7 +366,7 @@ Trt::extract_deskew(RotatedRect& r)
     }
 
     Extract = getRotationMatrix2D(r.center, angle, 1.0);
-    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_LINEAR);
+    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_CUBIC);
 
     getRectSubPix(Deskew, r_size, r.center, Cropped);
 
@@ -392,7 +391,7 @@ Trt::extract_deskew(RotatedRect& r)
 }
 
 Mat&
-Trt::print_results(Mat& src)
+Trt::print_results(Mat& src, Mat& Cropped)
 {
     find_friends();
 
@@ -409,7 +408,7 @@ Trt::print_results(Mat& src)
 		rect_points[2].y +
 		((rect_points[1].y - rect_points[2].y) / 3 * 2));
 
-	vector<int> res = extract_deskew(r);
+	vector<int> res = extract_deskew(r, Cropped);
 	vector<int>::iterator it = res.begin();
 
 	for (it = res.begin(); it != res.end(); it++)
