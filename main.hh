@@ -9,6 +9,7 @@
 # include "Pretrt.hh"
 # include "Trt.hh"
 # include "Axe.hh"
+# include "BarCodeTrt.hh"
 
 //# include "Reco.hh"
 

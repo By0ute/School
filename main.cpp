@@ -36,6 +36,8 @@ main (int argc,
     //trt.find_friends();
     //Mat res = trt.axes_bounding();
     Mat res = trt.find_friends();
+    // BarCode
+    barCodeTrt(out);
 
     //trt.print_contours();
 
