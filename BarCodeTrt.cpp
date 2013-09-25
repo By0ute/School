@@ -1,5 +1,6 @@
 #include "BarCodeTrt.hh"
 
+
 vector<int>   barCodeTrt(Mat &barCode)
 {
     int min_width = 0;
@@ -14,9 +15,20 @@ vector<int>   barCodeTrt(Mat &barCode)
     set_VectLDigit(vect_left);
     set_VectRDigit(vect_right);
 
+    cout << "barCode cols : " << barCode.cols << endl;
+    cout << "barCode rows : " << barCode.rows << endl;
+
     // skip white space
-    while (y < barCode.cols && barCode.at<uchar>(x, y) != 255)
-	y++;
+    while (x < barCode.rows)
+    {
+	while (y < barCode.cols && barCode.at<uchar>(x, y) != 255)
+	    y++;
+	cout << y  << " " << x << endl;
+	if (y != barCode.cols)
+	    break;
+	x++;
+	y = 0;
+    }
 
     // Detect Start guard
     min_width = detect_lguard(barCode, x, y);
