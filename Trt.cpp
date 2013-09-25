@@ -58,16 +58,22 @@ Trt::~Trt()
 /* -------------- */
 // mat_
 Mat
-Trt::get_mat()
+Trt::get_mat() const
 {
     return mat_;
 }
 
 // contours_
 vector<vector<Point> >
-Trt::get_contours()
+Trt::get_contours() const
 {
     return contours_;
+}
+
+vector<RotatedRect>
+Trt::get_rects() const
+{
+    return rects_;
 }
 
 
@@ -133,9 +139,6 @@ Trt::contours_bounding()
     vector<vector<Point> > contours; //all contours of white shapes
     vector<Vec4i> hierarchy; //hierarchy of the contours
     Mat res = Mat::zeros(mat_.size(), CV_8UC3); //result image
-    Scalar color_contours = Scalar(255, 0, 0); //color for the contours (BLUE)
-    Scalar color_bounding = Scalar(255, 255, 0); //color for the
-						//bounding boxes (YELLOW)
 
     // find the contours of white shapes in original picture
     findContours(mat_, contours, hierarchy, CV_RETR_EXTERNAL,
@@ -149,7 +152,7 @@ Trt::contours_bounding()
     for (it = contours.begin(); it < contours.end(); it++)
     {
 	drawContours(res, contours, place,
-		     color_contours, 0, CV_AA);
+		     BLUE, 0, CV_AA);
 
 	RotatedRect rec = rect_bar(*it);
 
@@ -163,7 +166,7 @@ Trt::contours_bounding()
 	    place++;
 	    for (int j = 0; j < 4; j++)
 		line(res, rect_points[j], rect_points[(j+1)%4],
-		     color_bounding, 1, 8);
+		     YELLOW, 1, 8);
 	}
 	else
 	{
@@ -176,7 +179,7 @@ Trt::contours_bounding()
     set_contours(contours);
     set_rects(rects);
     //print_contours();
-    set_mat(res);
+    //set_mat(res);
 
     return res;
 }
@@ -193,10 +196,6 @@ Trt::axes_bounding()
     contours_bounding();
 
     vector<Axe> axes;
-    // YELLOW
-    Scalar color_bounding = Scalar(255, 255, 0);
-    // PINK
-    Scalar color_axe= Scalar(100, 0, 255);
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
 
     for (int i = 0; i < contours_.size(); i++)
@@ -209,13 +208,13 @@ Trt::axes_bounding()
 
 	for (int j = 0; j < 4; j++)
 	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 color_bounding, 1, 8);
+		 YELLOW, 1, 8);
 
-	line(mat_res, axes[i].p1_, axes[i].p2_, color_axe, 1, 8, 0);
+	line(mat_res, axes[i].p1_, axes[i].p2_, PINK, 1, 8, 0);
     }
 
     set_axes(axes);
-    set_mat(mat_res);
+    //set_mat(mat_res);
     return mat_res;
 }
 
@@ -230,10 +229,9 @@ Trt::find_friends()
 {
     axes_bounding();
 
+    // creates a black picture to only draw bars
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
-    Scalar color_axe= Scalar(100, 0, 255);
-    Scalar color_bounding = Scalar(255, 255, 0);
-    Scalar color_text = Scalar(255, 255, 255);
+    // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
@@ -242,23 +240,29 @@ Trt::find_friends()
 
     for (int i = 0; i < axes_.size(); i++)
     {
-	line(mat_res, axes_[i].p1_, axes_[i].p2_, color_axe, 1, 8, 0);
+
+	// Just to see what is tested on picture to debug
+	//
+	// draw inner line
+	line(mat_res, axes_[i].p1_, axes_[i].p2_, PINK, 1, 8, 0);
 
 	Point2f rect_points[4];
 	rects_[i].points(rect_points);
 
+	// draw bounding box
 	for (int j = 0; j < 4; j++)
 	    line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 color_bounding, 1, 8);
+		 YELLOW, 1, 8);
 
+	Point p1_1 = axes_[i].p1_;
+	Point p1_2 = axes_[i].p2_;
 
-	Point p1 = axes_[i].p1_;
+	Point p(p1_1.x, p1_1.y);
+	// draw the txt : nb of item
+	putText(mat_res, key_str_axe(axes_[i]), p, fontFace, fontScale,
+		WHITE, thickness, 8);
 
-	Point p(p1.x, p1.y + i);
-	ostringstream oss;
-	oss << i;
-	putText(mat_res, oss.str(), p, fontFace, fontScale,
-		color_text, thickness, 8);
+	// end of debug
 
 	set<Axe> tmp;
 	tmp.insert(axes_[i]);
@@ -267,10 +271,13 @@ Trt::find_friends()
 	{
 	    if (j != i)
 	    {
-		Point p2 = axes_[j].p1_;
-		int dist = distance(p1, p2);
+		Point p2_1 = axes_[j].p1_;
+		Point p2_2 = axes_[j].p2_;
+		int dist1 = distance(p1_1, p2_1);
+		int dist2 = distance(p1_2, p2_2);
 
-		if (dist <= 20) // distance droite
+		if ((abs(dist1 - dist2) <= 20) &&
+		    ((dist1 <= 50) || (dist2 <= 50)))
 		    tmp.insert(axes_[j]);
 
 		// check distance diago
@@ -286,31 +293,252 @@ Trt::find_friends()
     vector<set<Axe> >::iterator it;
     vector<set<Axe> >::iterator jt;
 
-    for (it = friends.begin(); it != friends.end(); it++)
+    // remove doublons and regroup sets
+    for (jt = friends.begin(); jt != friends.end(); jt++)
     {
-	for (jt = friends.begin(); jt != friends.end(); jt++)
+	it = friends.begin();
+	while (it != friends.end())
 	{
-	    if (jt != it)
+	    if (it != jt)
 	    {
-		if (is_doublon(*it, *jt))
+		if (is_doublon(*jt, *it))
 		{
-		    cout << "jai un doublon" << endl;
-		    it->insert(jt->begin(), jt->end());
-		    friends.erase(jt);
-		    jt = friends.begin();
+		    jt->insert(it->begin(), it->end());
+		    friends.erase(it);
 		}
+		else
+		    it++;
 	    }
+	    else
+		it++;
 	}
     }
 
+    vector<RotatedRect> rects;
+    vector<RotatedRect>::iterator it_rect;
 
-    cout << "Size : " << friends.size() << endl;
+    for (set<Axe> s : friends)
+	rects.push_back(create_rotated_rect(s));
+
+    //for (it_rect = rects_.begin(), it = friends_.begin();
+    //it_rect != rects_.end(), it != friends_.end();
+    //it_rect++, it++)
+    //while ()
+    //{
+    //	
+    //}
+
+
 
     set_friends(friends);
+    set_rects(rects);
 
-    print_friends();
+    it_rect = rects_.begin();
+    it = friends_.begin();
+
+    while (it_rect != rects_.end() && it != friends_.end())
+    {
+	Point2f rect_points[4];
+	it_rect->points(rect_points);
+
+	int width = distance(rect_points[1], rect_points[0]);
+	int height = distance(rect_points[1], rect_points[2]);
+
+	if (height < width)
+	    swap(width, height);
+
+	if ((width * 6 < height))// ||
+	    //(width * 2 > height))
+	{
+	    friends_.erase(it);
+	    rects_.erase(it_rect);
+	}
+	else
+	{
+	    it++;
+	    it_rect++;
+	}
+    }
+
+    //cout << "Size : " << friends_.size() << endl;
+    //cout << "Size rects " << rects_.size() << endl;
+
+
+    //for (RotatedRect r : rects_)
+    //{
+	//Point2f rect_points[4];
+	//r.points(rect_points);
+
+	//// draw bounding box
+	//for (int j = 0; j < 4; j++)
+	    //line(mat_res, rect_points[j], rect_points[(j+1)%4],
+		 //GREEN, 1, 8);
+    //}
+
+
+
+    //
+    //
+    //for (set<Axe> s : friends)
+    //cout << "-> " << s.size() << endl;
+
+
+    //print_friends();
 
     return (mat_res);
+}
+
+Mat
+Trt::extract_deskew(RotatedRect& r)
+{
+    Mat Extract, Deskew, Cropped;
+
+    float angle = r.angle;
+    Size r_size = r.size;
+
+    if (r.angle < -45.)
+    {
+	angle += 90.0;
+	swap(r_size.width, r_size.height);
+    }
+
+    Extract = getRotationMatrix2D(r.center, angle, 1.0);
+    warpAffine(mat_, Deskew, Extract, mat_.size(), INTER_CUBIC);
+
+    getRectSubPix(Deskew, r_size, r.center, Cropped);
+
+    return Cropped;
+}
+
+
+
+//// TEMPORARY
+
+
+
+Mat
+Trt::extract_deskew2(Mat& in)
+{
+    if (rects_.size() > 0)
+    {
+	RotatedRect r = rects_[0];
+
+	Mat Extract, Deskew, Cropped;
+
+	float angle = r.angle;
+	Size r_size = r.size;
+
+	if (r.angle < -45.)
+	{
+	    angle += 90.0;
+	    swap(r_size.width, r_size.height);
+	}
+
+	Extract = getRotationMatrix2D(r.center, angle, 1.0);
+	warpAffine(in, Deskew, Extract, in.size(), INTER_CUBIC);
+
+	getRectSubPix(Deskew, r_size, r.center, Cropped);
+
+	//Cropped = subtreatment(Cropped, r);
+
+	return Cropped;
+    }
+
+    return in;
+}
+
+Mat
+Trt::subtreatment(Mat& cropped, RotatedRect& box)
+{
+    Mat lol = cropped.clone();
+    vector<Vec4i> lines;
+    Size size = cropped.size();
+
+    HoughLinesP(cropped, lines, 1, CV_PI / 180, size.width / 2.f, 20);
+    Mat disp_lines(size, CV_8UC1, BLACK);
+
+    double angle = 0;
+
+    unsigned nb_lines = lines.size();
+
+    for (int i = 0; i < nb_lines; i++)
+    {
+	line(disp_lines, Point(lines[i][0], lines[i][1]),
+	     Point(lines[i][2], lines[i][3]), BLUE);
+
+	angle += atan2((double)lines[i][3] - lines[i][1],
+		       (double)lines[i][2] - lines[i][0]);
+    }
+
+    angle /= nb_lines;
+
+    // redo the rotation
+    //RotatedRect box = minAreaRect(cropped);
+    Mat rot_mat = getRotationMatrix2D(box.center, angle, 1);
+
+    Mat rotated;
+    warpAffine(cropped, rotated, rot_mat, cropped.size(), INTER_CUBIC);
+
+    Size box_size = box.size;
+
+    if (box.angle < -45.)
+	swap(box_size.width, box_size.height);
+
+    Mat res;
+
+    getRectSubPix(rotated, box_size, box.center, res);
+
+
+    cout << "angle = " << angle * 180 / CV_PI << endl;
+
+    return res;
+}
+
+
+// TEMPORARY
+
+
+
+
+Mat&
+Trt::print_results(Mat& src)
+{
+    find_friends();
+
+    int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
+    double fontScale = 3;
+    int thickness = 5;
+
+    for (RotatedRect r : rects_)
+    {
+	Point2f rect_points[4];
+	r.points(rect_points);
+
+	Point p(rect_points[2].x,
+		rect_points[2].y +
+		((rect_points[1].y - rect_points[2].y) / 3 * 2));
+
+	// draw bounding box
+	//if (decode(r))
+	//{
+	//for (int j = 0; j < 4; j++)
+	//line(src, rect_points[j], rect_points[(j+1)%4],
+	//GREEN, 10, 8);
+	//}
+	//else
+	//{
+	    for (int j = 0; j < 4; j++)
+		line(src, rect_points[j], rect_points[(j+1)%4],
+		     RED, 10, 8);
+
+
+	    putText(src, "FAUX CODE", p, fontFace, fontScale,
+		    RED, thickness, 8);
+	    //}
+
+    }
+
+    return src;
 }
 
 
@@ -373,7 +601,7 @@ Trt::print_friends()
 /* ------------------ */
 // 2 4 3-5 AXE
 Axe
-points_axe(vector<Point> v)
+points_axe(vector<Point>& v)
 {
     int max_y = 0;
     int max_x = 0;
@@ -419,7 +647,7 @@ points_axe(vector<Point> v)
 /* ------------------ */
 /* ------------------ */
 Axe
-rect_axe(RotatedRect r)
+rect_axe(RotatedRect& r)
 {
     Point2f r_pts[4];
     r.points(r_pts);
@@ -454,7 +682,7 @@ rect_axe(RotatedRect r)
 /* ------------------ */
 /* ------------------ */
 RotatedRect
-rect_bar(vector<Point> vec)
+rect_bar(vector<Point>& vec)
 {
     RotatedRect rect = minAreaRect(vec);
 
@@ -479,7 +707,20 @@ rect_bar(vector<Point> vec)
 /* ------------------ */
 /* ------------------ */
 int
-distance(Point p1, Point p2)
+distance(Point& p1, Point& p2)
+{
+    int x1 = p1.x;
+    int y1 = p1.y;
+    int x2 = p2.x;
+    int y2 = p2.y;
+    int res1 = x2 - x1;
+    int res2 = y2 - y1;
+
+    return (sqrt ((res1*res1) + (res2*res2)));
+}
+
+int
+distance(Point2f& p1, Point2f& p2)
 {
     int x1 = p1.x;
     int y1 = p1.y;
@@ -498,7 +739,7 @@ distance(Point p1, Point p2)
 /* ------------------ */
 /* ------------------ */
 vector<vector<Point> >
-make_vector(map<int, vector<Point> > m)
+make_vector(map<int, vector<Point> >& m)
 {
     vector<vector<Point> > vec;
     map<int, vector<Point> >::iterator it;
@@ -511,7 +752,7 @@ make_vector(map<int, vector<Point> > m)
 
 
 vector<Rect>
-make_boundings(map<int, vector<Point> > m, vector<Rect> b)
+make_boundings(map<int, vector<Point> >& m, vector<Rect>& b)
 {
     vector<Rect> res;
     map<int, vector<Point> >::iterator it;
@@ -523,14 +764,14 @@ make_boundings(map<int, vector<Point> > m, vector<Rect> b)
 }
 
 void
-print_point(Point p, int i)
+print_point(Point& p, int& i)
 {
     cout << "Point " << i << " (" << p.x;
     cout << ", " << p.y << ")";// << endl;
 }
 
 void
-print_axe(Axe a)
+print_axe(Axe& a)
 {
     int x1 = a.p1_.x;
     int x2 = a.p2_.x;
@@ -543,7 +784,7 @@ print_axe(Axe a)
 
 
 int
-parallel_axes(Axe a1, Axe a2)
+parallel_axes(Axe& a1, Axe& a2)
 {
     int x1 = a1.p1_.x;
     int y1 = a1.p1_.y;
@@ -558,23 +799,53 @@ parallel_axes(Axe a1, Axe a2)
 }
 
 bool
-is_doublon(set<Axe> s1, set<Axe> s2)
+is_doublon(set<Axe>& s1, set<Axe>& s2)
 {
-    bool res = false;
     set<Axe>::iterator it;
 
-    for (Axe a : s2)
+    for (Axe a1 : s1)
     {
-	it = s1.find(a);
-
-	if (it != s1.end())
+	for (Axe a2 : s2)
 	{
-	    res = true;
-	    break;
+	    if (a1.p1_.x == a2.p1_.x &&
+		a1.p1_.y == a2.p1_.y &&
+		a1.p2_.x == a2.p2_.x &&
+		a1.p2_.y == a2.p2_.y)
+		return true;
 	}
     }
 
-    return res;
+    return false;
+}
+
+string
+key_str_axe(Axe& a)
+{
+    ostringstream oss;
+    oss << (a.p1_.x + a.p1_.y + a.p2_.x + a.p2_.y);
+    return oss.str();
+}
+
+RotatedRect
+create_rotated_rect(set<Axe>& s)
+{
+    vector<Point> points;
+
+    for (Axe a : s)
+    {
+	points.push_back(a.p1_);
+	points.push_back(a.p2_);
+    }
+
+    RotatedRect res = minAreaRect(points);
+    res.size.height += (res.size.height * 0.05);
+    res.size.width += (res.size.width * 0.05);
+
+    //vector<Vec4i> lines;
+    //
+    //HoughLinesP(res, lines, 1, CV_PI / 180, 100, res.size.width / 2.f, 20);
+
+    return (res);
 }
 
 

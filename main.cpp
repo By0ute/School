@@ -17,6 +17,7 @@ main (int argc,
     const char name_in[] = "Source Picture";
     const char name_out[] = "Pretrt Picture";
     const char name_trt[] = "Trt Picture";
+    const char name_test[] = "Test Cropped";
 
     Mat in;
     in = imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
@@ -37,6 +38,14 @@ main (int argc,
     //Mat res = trt.axes_bounding();
     Mat res = trt.find_friends();
     // BarCode
+    //Mat res = trt.find_friends();
+
+    Mat clone = in.clone();
+    Mat res = trt.print_results(clone);
+    Mat test = trt.extract_deskew2(out);
+    //RotatedRect r = trt.get_rects().front;
+    //Mat test = trt.extract_deskew(trt.get_rects().front);
+    // BARCODE TREATMENT : TODO
     barCodeTrt(out);
 
     //trt.print_contours();
@@ -53,12 +62,17 @@ main (int argc,
     cvMoveWindow(name_trt, 800, 100);
     imshow(name_trt, res);
 
+    namedWindow(name_test, CV_WINDOW_NORMAL);
+    cvMoveWindow(name_test, 400, 300);
+    imshow(name_test, test);
+
     waitKey(0);
 
 
     destroyWindow(name_in);
     destroyWindow(name_out);
     destroyWindow(name_trt);
+    destroyWindow(name_test);
 
     return EXIT_SUCCESS;
 }

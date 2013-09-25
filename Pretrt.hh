@@ -14,7 +14,6 @@ namespace Pretrt
 {
 	    Mat color2Gray(Mat in);
 	    Mat blackHat(Mat in);
-	    //Mat blackHat2(Mat in);
 	    Mat binarize(Mat in);
 
 }
