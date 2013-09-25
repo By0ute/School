@@ -13,13 +13,13 @@ using namespace cv;
 using namespace std;
 
 // whole treatment of barCode
-void	barCodeTrt(Mat &barCode);
+vector<int>	barCodeTrt(Mat &barCode);
 
-// Setup Left map digit
-void	set_MapLDigit(vector<TabInt> &mapLeft);
+// Setup Left vect digit
+void	set_VectLDigit(vector<TabInt> &vectLeft);
 
-// Setup Right map digit
-void	set_MapRDigit(vector<TabInt> &mapRight);
+// Setup Right vect digit
+void	set_VectRDigit(vector<TabInt> &vectRight);
 
 // Detect start guard in barcode and set the min_width of a bar
 int	detect_lguard(Mat& barCode, int x, int &y);
@@ -32,6 +32,6 @@ void	detect_midguard(Mat& barCode, int x, int &y, int min_width);
 
 // Detect Digit
 int	read_digit(Mat& barCode, int x, int &y, int min_width,
-		   vector<TabInt> mapDigit);
+		   vector<TabInt> vectDigit);
 
 #endif

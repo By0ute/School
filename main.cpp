@@ -36,17 +36,21 @@ main (int argc,
     //Mat res = trt.contours_bounding();
     //trt.find_friends();
     //Mat res = trt.axes_bounding();
-    Mat res = trt.find_friends();
+    Mat res1 = trt.find_friends();
     // BarCode
     //Mat res = trt.find_friends();
+
+    // --------- Barcode TREATMENT -----
+    vector<int> barCodeRes = barCodeTrt(out);
+    for (int digit : barCodeRes)
+	cout << digit << " ";
+    cout << endl;
 
     Mat clone = in.clone();
     Mat res = trt.print_results(clone);
     Mat test = trt.extract_deskew2(out);
     //RotatedRect r = trt.get_rects().front;
     //Mat test = trt.extract_deskew(trt.get_rects().front);
-    // BARCODE TREATMENT : TODO
-    barCodeTrt(out);
 
     //trt.print_contours();
 
