@@ -344,11 +344,10 @@ Trt::find_friends()
 	int width = distance(rect_points[1], rect_points[0]);
 	int height = distance(rect_points[1], rect_points[2]);
 
-	if (height < width)
+	if (height > width)
 	    swap(width, height);
 
-	if ((width * 6 < height))// ||
-	    //(width * 2 > height))
+	if (width * 6 < height)
 	{
 	    friends_.erase(it);
 	    rects_.erase(it_rect);
@@ -359,31 +358,6 @@ Trt::find_friends()
 	    it_rect++;
 	}
     }
-
-    //cout << "Size : " << friends_.size() << endl;
-    //cout << "Size rects " << rects_.size() << endl;
-
-
-    //for (RotatedRect r : rects_)
-    //{
-	//Point2f rect_points[4];
-	//r.points(rect_points);
-
-	//// draw bounding box
-	//for (int j = 0; j < 4; j++)
-	    //line(mat_res, rect_points[j], rect_points[(j+1)%4],
-		 //GREEN, 1, 8);
-    //}
-
-
-
-    //
-    //
-    //for (set<Axe> s : friends)
-    //cout << "-> " << s.size() << endl;
-
-
-    //print_friends();
 
     return (mat_res);
 }
@@ -435,13 +409,40 @@ Trt::extract_deskew2(Mat& in)
 	}
 
 	Extract = getRotationMatrix2D(r.center, angle, 1.0);
-	warpAffine(in, Deskew, Extract, in.size(), INTER_CUBIC);
+	warpAffine(in, Deskew, Extract, in.size(), INTER_LINEAR);
 
 	getRectSubPix(Deskew, r_size, r.center, Cropped);
 
+	r_size = Cropped.size();
+
+	if (r_size.width < r_size.height)
+	{
+	    Point2f center(Cropped.rows / 2.0f, Cropped.cols / 2.0f);
+	    Mat rot_mat = getRotationMatrix2D(center, -90, 0.7);
+	    Mat dst;
+	    Size size_swap(Cropped.size().height, Cropped.size().width);
+	    warpAffine(Cropped, dst, rot_mat, size_swap);
+	    Cropped = dst;
+	}
+
+	Mat soluce;
+
+	//Mat element = getStructuringElement(MORPH_RECT,
+	//Size(20,20), Point(-1,-1));
+
+	//morphologyEx(Cropped, soluce, MORPH_BLACKHAT, element);
+
+	//threshold(soluce, soluce, 127, 255, THRESH_BINARY);
+	threshold(Cropped, soluce, 100, 255, THRESH_BINARY);
+
 	//Cropped = subtreatment(Cropped, r);
 
-	return Cropped;
+	//return Cropped;
+	//Size s = soluce.size();
+	//cout << s.width << endl;
+	//cout << s.height << endl;
+
+	return soluce;
     }
 
     return in;

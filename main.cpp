@@ -28,7 +28,8 @@ main (int argc,
 	return EXIT_FAILURE;
     }
 
-    Mat out = binarize(blackHat(color2Gray(in)));
+    //Mat out = binarize(blackHat(color2Gray(in)));
+    Mat out = binarize(in);
     //Mat out = blackHat(color2Gray(in));
     Trt trt(out);
     //trt.axes_bounding();
@@ -36,10 +37,10 @@ main (int argc,
     //Mat res = trt.contours_bounding();
     //trt.find_friends();
     //Mat res = trt.axes_bounding();
-    //Mat res = trt.find_friends();
+    Mat res = trt.find_friends();
 
     Mat clone = in.clone();
-    Mat res = trt.print_results(clone);
+    //Mat res = trt.print_results(clone);
     Mat test = trt.extract_deskew2(out);
     //RotatedRect r = trt.get_rects().front;
     //Mat test = trt.extract_deskew(trt.get_rects().front);
