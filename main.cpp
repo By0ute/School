@@ -38,7 +38,8 @@ main (int argc,
     //Mat res = trt.axes_bounding();
     //Mat res = trt.find_friends();
 
-    Mat res = trt.print_results(in);
+    Mat clone = in.clone();
+    Mat res = trt.print_results(clone);
     Mat test = trt.extract_deskew2(out);
     //RotatedRect r = trt.get_rects().front;
     //Mat test = trt.extract_deskew(trt.get_rects().front);

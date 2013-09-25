@@ -315,12 +315,50 @@ Trt::find_friends()
     }
 
     vector<RotatedRect> rects;
+    vector<RotatedRect>::iterator it_rect;
 
     for (set<Axe> s : friends)
 	rects.push_back(create_rotated_rect(s));
 
+    //for (it_rect = rects_.begin(), it = friends_.begin();
+    //it_rect != rects_.end(), it != friends_.end();
+    //it_rect++, it++)
+    //while ()
+    //{
+    //	
+    //}
+
+
+
     set_friends(friends);
     set_rects(rects);
+
+    it_rect = rects_.begin();
+    it = friends_.begin();
+
+    while (it_rect != rects_.end() && it != friends_.end())
+    {
+	Point2f rect_points[4];
+	it_rect->points(rect_points);
+
+	int width = distance(rect_points[1], rect_points[0]);
+	int height = distance(rect_points[1], rect_points[2]);
+
+	if (height < width)
+	    swap(width, height);
+
+	if ((width * 6 < height))// ||
+	    //(width * 2 > height))
+	{
+	    friends_.erase(it);
+	    rects_.erase(it_rect);
+	}
+	else
+	{
+	    it++;
+	    it_rect++;
+	}
+    }
 
     //cout << "Size : " << friends_.size() << endl;
     //cout << "Size rects " << rects_.size() << endl;
@@ -381,26 +419,79 @@ Trt::extract_deskew(RotatedRect& r)
 Mat
 Trt::extract_deskew2(Mat& in)
 {
-    RotatedRect r = rects_[0];
-
-    Mat Extract, Deskew, Cropped;
-
-    float angle = r.angle;
-    Size r_size = r.size;
-
-    if (r.angle < -45.)
+    if (rects_.size() > 0)
     {
-	angle += 90.0;
-	swap(r_size.width, r_size.height);
+	RotatedRect r = rects_[0];
+
+	Mat Extract, Deskew, Cropped;
+
+	float angle = r.angle;
+	Size r_size = r.size;
+
+	if (r.angle < -45.)
+	{
+	    angle += 90.0;
+	    swap(r_size.width, r_size.height);
+	}
+
+	Extract = getRotationMatrix2D(r.center, angle, 1.0);
+	warpAffine(in, Deskew, Extract, in.size(), INTER_CUBIC);
+
+	getRectSubPix(Deskew, r_size, r.center, Cropped);
+
+	//Cropped = subtreatment(Cropped, r);
+
+	return Cropped;
     }
 
-    Extract = getRotationMatrix2D(r.center, angle, 1.0);
-    warpAffine(in, Deskew, Extract, in.size(), INTER_CUBIC);
+    return in;
+}
 
-    getRectSubPix(Deskew, r_size, r.center, Cropped);
+Mat
+Trt::subtreatment(Mat& cropped, RotatedRect& box)
+{
+    Mat lol = cropped.clone();
+    vector<Vec4i> lines;
+    Size size = cropped.size();
 
-    //return Extract;
-    return Cropped;
+    HoughLinesP(cropped, lines, 1, CV_PI / 180, size.width / 2.f, 20);
+    Mat disp_lines(size, CV_8UC1, BLACK);
+
+    double angle = 0;
+
+    unsigned nb_lines = lines.size();
+
+    for (int i = 0; i < nb_lines; i++)
+    {
+	line(disp_lines, Point(lines[i][0], lines[i][1]),
+	     Point(lines[i][2], lines[i][3]), BLUE);
+
+	angle += atan2((double)lines[i][3] - lines[i][1],
+		       (double)lines[i][2] - lines[i][0]);
+    }
+
+    angle /= nb_lines;
+
+    // redo the rotation
+    //RotatedRect box = minAreaRect(cropped);
+    Mat rot_mat = getRotationMatrix2D(box.center, angle, 1);
+
+    Mat rotated;
+    warpAffine(cropped, rotated, rot_mat, cropped.size(), INTER_CUBIC);
+
+    Size box_size = box.size;
+
+    if (box.angle < -45.)
+	swap(box_size.width, box_size.height);
+
+    Mat res;
+
+    getRectSubPix(rotated, box_size, box.center, res);
+
+
+    cout << "angle = " << angle * 180 / CV_PI << endl;
+
+    return res;
 }
 
 
@@ -749,6 +840,10 @@ create_rotated_rect(set<Axe>& s)
     RotatedRect res = minAreaRect(points);
     res.size.height += (res.size.height * 0.05);
     res.size.width += (res.size.width * 0.05);
+
+    //vector<Vec4i> lines;
+    //
+    //HoughLinesP(res, lines, 1, CV_PI / 180, 100, res.size.width / 2.f, 20);
 
     return (res);
 }

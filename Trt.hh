@@ -31,9 +31,9 @@ class Trt
 {
     public:
 	    // constructor and co
-	    Trt();
-	    Trt(Mat m);
-	    Trt(Mat m, vector<vector <Point> > c,
+	    Trt ();
+	    Trt (Mat m);
+	    Trt (Mat m, vector<vector <Point> > c,
 		vector<Axe> a,
 		vector<set<Axe> > f,
 		vector<RotatedRect> r);
@@ -41,27 +41,28 @@ class Trt
 	    ~Trt();
 
 	    // Treatment methods
-	    Mat contours_bounding();
-	    Mat axes_bounding();
-	    Mat find_friends();
-	    Mat& print_results(Mat& src);
-	    Mat extract_deskew(RotatedRect& r);
-	    Mat extract_deskew2(Mat& in);
+	    Mat contours_bounding ();
+	    Mat axes_bounding ();
+	    Mat find_friends ();
+	    Mat& print_results (Mat& src);
+	    Mat extract_deskew (RotatedRect& r);
+	    Mat extract_deskew2 (Mat& in);
+	    Mat subtreatment (Mat& cropped, RotatedRect& box);
 
 	    // utils
-	    void print_contours();
-	    void print_friends();
+	    void print_contours ();
+	    void print_friends ();
 
 	    // getters setters
-	    Mat get_mat() const;
-	    vector<vector<Point> > get_contours() const;
-	    vector<RotatedRect> get_rects() const;
+	    Mat get_mat () const;
+	    vector<vector<Point> > get_contours () const;
+	    vector<RotatedRect> get_rects () const;
 
-	    void set_mat(Mat m);
-	    void set_contours(vector<vector<Point> > c);
-	    void set_axes(vector<Axe> a);
-	    void set_friends(vector<set<Axe> > f);
-	    void set_rects(vector<RotatedRect> r);
+	    void set_mat (Mat m);
+	    void set_contours (vector<vector<Point> > c);
+	    void set_axes (vector<Axe> a);
+	    void set_friends (vector<set<Axe> > f);
+	    void set_rects (vector<RotatedRect> r);
 
     private:
 	    Mat mat_;
