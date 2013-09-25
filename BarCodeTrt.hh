@@ -26,7 +26,7 @@ void	set_VectRDigit(vector<TabInt> &vectRight);
 int	detect_lguard(Mat& barCode, int x, int &y);
 
 // Detect end guard
-void	detect_rguard(Mat& barCode, int x, int &y, int min_width);
+int	detect_rguard(Mat& barCode);
 
 // Detect mid guard
 void	detect_midguard(Mat& barCode, int x, int &y, int min_width);

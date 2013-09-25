@@ -4,7 +4,9 @@
 vector<int>   barCodeTrt(Mat &barCode)
 {
     int min_width = 0;
-    int x = 0;
+    int min_lwidth = 0;
+    int min_rwidth = 0;
+    int x = barCode.rows / 3;
     int y = 0;
 
     vector<TabInt> vect_left;
@@ -15,15 +17,11 @@ vector<int>   barCodeTrt(Mat &barCode)
     set_VectLDigit(vect_left);
     set_VectRDigit(vect_right);
 
-    cout << "barCode cols : " << barCode.cols << endl;
-    cout << "barCode rows : " << barCode.rows << endl;
-
     // skip white space
     while (x < barCode.rows)
     {
 	while (y < barCode.cols && barCode.at<uchar>(x, y) != 255)
 	    y++;
-	cout << y  << " " << x << endl;
 	if (y != barCode.cols)
 	    break;
 	x++;
@@ -31,7 +29,10 @@ vector<int>   barCodeTrt(Mat &barCode)
     }
 
     // Detect Start guard
-    min_width = detect_lguard(barCode, x, y);
+    min_lwidth = detect_lguard(barCode, x, y);
+    min_rwidth = detect_rguard(barCode);
+
+    min_width = (min_lwidth + min_rwidth) / 2;
 
     vector<int> digitsVect;
 
@@ -48,31 +49,24 @@ vector<int>   barCodeTrt(Mat &barCode)
 	digitsVect.push_back(read_digit(barCode, x, y, min_width,
 					vect_right));
 
-    //detect right guard
-    detect_rguard(barCode, x, y, min_width);
-
     return digitsVect;
 }
 
 int	detect_lguard(Mat &barCode, int x, int &y)
 {
     int guard[3] = {255, 0, 255};
-    int min_width = 0;
+    int width[3] = {0, 0, 0};
     for (int i = 0; i < 3; i++)
     {
 	while (y < barCode.cols &&
 	       barCode.at<uchar>(x, y) == guard[i])
 	{
 	    // compute the minimum width of a bar
-	    if (i == 0)
-	    {
-	        min_width++;
-		y++;
-	    }
-	    else
-		y += min_width;
+	    width[i]++;
+	    y++;
 	}
     }
+    int min_width = (width[0] + width[1] + width[2]) / 3;
     if (min_width == 0)
 	cout << "Probleme de detection" << endl;
     return min_width;
@@ -89,17 +83,38 @@ void	detect_midguard(Mat &barCode, int x, int &y, int min_width)
     }
 }
 
-void	detect_rguard(Mat &barCode, int x, int &y, int min_width)
+int	detect_rguard(Mat &barCode)
 {
+    int x = barCode.rows / 3;
+    int y = barCode.cols;
+
+    // skip white space
+    while (x < barCode.rows)
+    {
+	while (y > 0 && barCode.at<uchar>(x, y) != 255)
+	    y--;
+	if (y != barCode.cols)
+	    break;
+	x++;
+	y = barCode.cols;
+    }
+
     int guard[3] = {255, 0, 255};
+    int width[3] = {0, 0, 0};
     for (int i = 0; i < 3; i++)
     {
-	while (y < barCode.cols &&
-	       barCode.at<uchar>(x, y) == guard[i])
-	    y += min_width;
+	while (y > 0 && barCode.at<uchar>(x, y) == guard[i])
+	{
+	    // compute the minimum width of a bar
+	    width[i]++;
+	    y--;
+	}
     }
+    int min_width = (width[0] + width[1] + width[2]) / 3;
+    if (min_width == 0)
+	cout << "Probleme de detection" << endl;
+    return min_width;
 }
-
 
 void	set_VectLDigit(vector<TabInt> &vectLeft)
 {
@@ -171,6 +186,10 @@ int	read_digit(Mat& barCode, int x, int &y, int min_width,
 	    y --;
     }
 
+//    for (int i = 0; i < 7; i++)
+//	cout << test[i] << " ";
+//    cout << endl;
+
     // Put the right value to compare with the digit
     // with the average of the min_width
     int average = min_width / 2;
@@ -181,6 +200,10 @@ int	read_digit(Mat& barCode, int x, int &y, int min_width,
 	else
 	    test[i] = 0;
     }
+
+//    for (int i = 0; i < 7; i++)
+//	cout << test[i] << " ";
+//    cout << endl;
 
     TabInt testTabInt(test [0], test[1], test[2], test[3],
 		      test[4], test[5], test[6], -2);
