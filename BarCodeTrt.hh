@@ -31,6 +31,9 @@ int	detect_rguard(Mat& barCode);
 // Detect mid guard
 void	detect_midguard(Mat& barCode, int x, int &y, int min_width);
 
+void	align(Mat &barCode, int x, int& y, int first_color,
+	      int last_color);
+
 // Detect Digit
 int	read_digit(Mat& barCode, int x, int &y, int min_width,
 		   vector<TabInt> vectDigit);
