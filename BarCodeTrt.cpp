@@ -164,6 +164,21 @@ void	set_VectRDigit(vector<TabInt> &vectRight)
     vectRight.push_back(d9);
 }
 
+void	align(Mat &barCode, int x, int& y, int first_color,
+		   int last_color)
+{
+    if (barCode.at<uchar>(x, y) == last_color)
+    {
+	while (barCode.at<uchar>(x, y) == last_color)
+	    y++;
+    }
+    else
+    {
+	while (barCode.at<uchar>(x, y - 1) == first_color)
+	    y --;
+    }
+}
+
 int	read_digit(Mat& barCode, int x, int &y, int min_width,
 		   vector<TabInt> vectDigit)
 {
@@ -200,6 +215,12 @@ int	read_digit(Mat& barCode, int x, int &y, int min_width,
 	else
 	    test[i] = 0;
     }
+
+    // on est a gauche
+    if (test[0] == 0)
+	align(barCode, x, y, 0, 255);
+    else
+	align(barCode, x, y, 255, 0);
 
 //    for (int i = 0; i < 7; i++)
 //	cout << test[i] << " ";
