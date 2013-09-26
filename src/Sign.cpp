@@ -122,10 +122,11 @@ Sign::normalize()
     int slice_size = slices[i].size();
     if (slice_size == 0)
     {
-      cerr << "Warning: normalized signature of " << id_
-	   << ": line number " << (i + 1) << " is wrong..." << endl;
+      VecParam v;
+      datas_.push_back(v);
     }
-    datas_.push_back(norma_vect(slices[i]));
+    else
+      datas_.push_back(norma_vect(slices[i]));
   }
 }
 
