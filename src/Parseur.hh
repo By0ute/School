@@ -42,6 +42,6 @@ using namespace std;
  * Writes final decision in score.txt
  * <file> <id> <score <decision: t/f>
  */
-    void writeFinalFile (string filetest, string id, int score, char decision);
+    void writeFinalFile (string filetest, string id, double score, char decision);
 
 #endif

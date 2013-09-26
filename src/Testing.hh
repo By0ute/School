@@ -11,15 +11,13 @@
 # include "Parseur.hh"
 
 # define PNORM 0.2
-# define THRESHOLD_ACCEPTATION 100 // need to test to find the right threshold
+# define THRESHOLD_ACCEPTATION 0
 
 namespace Testing
 {
     double distance(Sign* s1, Sign* s2);
 
     void test_sign(Sign* test_sign, string& filename, string& filenameTest);
-
-    void test();
 }
 
 #endif //TESTING_HH

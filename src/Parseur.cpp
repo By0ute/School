@@ -150,7 +150,7 @@ TestObj*  parseTrt (string filename)
 /**
  * WRITEFINALFILE
  */
-void	writeFinalFile (string filetest, string id, int score, char decision)
+void	writeFinalFile (string filetest, string id, double score, char decision)
 {
     ofstream file;
 

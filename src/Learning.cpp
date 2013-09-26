@@ -69,7 +69,7 @@ namespace Learning
 		return;
 	    }
 
-
+	    file << m->get_ref_sign().get_datas().size() << endl;
 	    for (VecParam v : m->get_ref_sign().get_datas())
 	    {
 		file << v.get_x() << " ";
