@@ -233,7 +233,6 @@ Trt::find_friends()
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
     // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
-    //vector<vector<RotatedRect> > rect_friends;
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
     double fontScale = 0.3;
@@ -266,9 +265,7 @@ Trt::find_friends()
 	// end of debug
 
 	set<Axe> tmp;
-	//vector<RotatedRect> r_tmp;
 	tmp.insert(axes_[i]);
-	//r_tmp.push_back(rects_[i]);
 
 	for (int j = 0; j < axes_.size(); j++)
 	{
@@ -281,10 +278,7 @@ Trt::find_friends()
 
 		if ((abs(dist1 - dist2) <= 20) &&
 		    ((dist1 <= 50) || (dist2 <= 50)))
-		{
 		    tmp.insert(axes_[j]);
-		    //r_tmp.push_back(rects_[j]);
-		}
 
 		// check distance diago
 		// parallèle avec angle < à alpha à déterminer
@@ -293,24 +287,16 @@ Trt::find_friends()
 	}
 
 	if (tmp.size() > 1)
-	{
 	    friends.push_back(tmp);
-	    //rect_friends.push_back(r_tmp);
-	}
     }
 
     vector<set<Axe> >::iterator it;
     vector<set<Axe> >::iterator jt;
-    //vector<vector<RotatedRect> >::iterator rit;
-    //vector<vector<RotatedRect> >::iterator rjt;
 
     // remove doublons and regroup sets
-    for (jt = friends.begin();//, rjt = rect_friends.begin();
-	 jt != friends.end();//, rjt != rect_friends.end();
-	 jt++)//, rjt++)
+    for (jt = friends.begin(); jt != friends.end(); jt++)
     {
 	it = friends.begin();
-	//rit = rect_friends.begin();
 	while (it != friends.end())
 	{
 	    if (it != jt)
@@ -319,30 +305,16 @@ Trt::find_friends()
 		{
 		    jt->insert(it->begin(), it->end());
 		    friends.erase(it);
-		    //rjt->insert(rjt->end(), rit->begin(), rit->end());
-		    //rect_friends.erase(rit);
 		}
 		else
-		{
 		    it++;
-		    //rit++;
-		}
 	    }
 	    else
-	    {
 		it++;
-		//rit++;
-	    }
 	}
     }
 
-    //cout << "size friends = " << friends.size() << endl;
-    //cout << "size rect_friends = " << rect_friends.size() << endl;
-
     vector<RotatedRect> rects;
-
-    //for (vector<RotatedRect> r : rect_friends)
-	//rects.push_back(create_rotatedrect(r));
 
     vector<RotatedRect>::iterator it_rect;
 
