@@ -97,6 +97,9 @@ void
 print_point (Point& p, int& i);
 
 void
+print_point (Point2f& p, int& i);
+
+void
 print_axe (Axe& a);
 
 int
@@ -109,7 +112,13 @@ string
 key_str_axe (Axe& a);
 
 RotatedRect
-create_rotated_rect(set<Axe>& s);
+create_rotated_rect (set<Axe>& s);
+
+RotatedRect
+create_rotatedrect (vector<RotatedRect>& rects);
+
+double
+pythagore (Point2f p1, Point2f p2);
 
 
 #endif //TRT_HH

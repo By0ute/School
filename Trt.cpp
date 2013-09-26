@@ -233,6 +233,7 @@ Trt::find_friends()
     Mat mat_res = Mat::zeros(mat_.size(), CV_8UC3);
     // vector of several axes sorted in set as friends -> vector of barcodes
     vector<set<Axe> > friends;
+    //vector<vector<RotatedRect> > rect_friends;
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
     double fontScale = 0.3;
@@ -265,7 +266,9 @@ Trt::find_friends()
 	// end of debug
 
 	set<Axe> tmp;
+	//vector<RotatedRect> r_tmp;
 	tmp.insert(axes_[i]);
+	//r_tmp.push_back(rects_[i]);
 
 	for (int j = 0; j < axes_.size(); j++)
 	{
@@ -278,7 +281,10 @@ Trt::find_friends()
 
 		if ((abs(dist1 - dist2) <= 20) &&
 		    ((dist1 <= 50) || (dist2 <= 50)))
+		{
 		    tmp.insert(axes_[j]);
+		    //r_tmp.push_back(rects_[j]);
+		}
 
 		// check distance diago
 		// parallèle avec angle < à alpha à déterminer
@@ -287,16 +293,24 @@ Trt::find_friends()
 	}
 
 	if (tmp.size() > 1)
-		friends.push_back(tmp);
+	{
+	    friends.push_back(tmp);
+	    //rect_friends.push_back(r_tmp);
+	}
     }
 
     vector<set<Axe> >::iterator it;
     vector<set<Axe> >::iterator jt;
+    //vector<vector<RotatedRect> >::iterator rit;
+    //vector<vector<RotatedRect> >::iterator rjt;
 
     // remove doublons and regroup sets
-    for (jt = friends.begin(); jt != friends.end(); jt++)
+    for (jt = friends.begin();//, rjt = rect_friends.begin();
+	 jt != friends.end();//, rjt != rect_friends.end();
+	 jt++)//, rjt++)
     {
 	it = friends.begin();
+	//rit = rect_friends.begin();
 	while (it != friends.end())
 	{
 	    if (it != jt)
@@ -305,16 +319,31 @@ Trt::find_friends()
 		{
 		    jt->insert(it->begin(), it->end());
 		    friends.erase(it);
+		    //rjt->insert(rjt->end(), rit->begin(), rit->end());
+		    //rect_friends.erase(rit);
 		}
 		else
+		{
 		    it++;
+		    //rit++;
+		}
 	    }
 	    else
+	    {
 		it++;
+		//rit++;
+	    }
 	}
     }
 
+    //cout << "size friends = " << friends.size() << endl;
+    //cout << "size rect_friends = " << rect_friends.size() << endl;
+
     vector<RotatedRect> rects;
+
+    //for (vector<RotatedRect> r : rect_friends)
+	//rects.push_back(create_rotatedrect(r));
+
     vector<RotatedRect>::iterator it_rect;
 
     for (set<Axe> s : friends)
@@ -398,8 +427,8 @@ Trt::print_results(Mat& src, Mat& Cropped)
     find_friends();
 
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
-    double fontScale = 2;
-    int thickness = 3;
+    double fontScale = 1;
+    int thickness = 2;
 
     for (RotatedRect r : rects_)
     {
@@ -410,8 +439,21 @@ Trt::print_results(Mat& src, Mat& Cropped)
 		rect_points[2].y +
 		((rect_points[1].y - rect_points[2].y) / 3 * 2));
 
+	//vector<int> res = extract_deskew(r, Cropped);
 	vector<int> res = extract_deskew(r, Cropped);
 	vector<int>::iterator it = res.begin();
+
+	string text = "";
+
+	for (int i = 0; i < res.size(); i++)
+	{
+	    ostringstream oss;
+	    oss << res[i];
+	    text += oss.str();
+	}
+
+	cout << "Decode : " << text << endl;
+
 
 	for (it = res.begin(); it != res.end(); it++)
 	{
@@ -421,15 +463,6 @@ Trt::print_results(Mat& src, Mat& Cropped)
 
 	if (it == res.end())
 	{
-	    string text = "";
-
-	    for (int i = 0; i < res.size(); i++)
-	    {
-		ostringstream oss;
-		oss << res[i];
-		text += oss.str();
-	    }
-
 	    // draw bounding box
 	    for (int j = 0; j < 4; j++)
 		line(src, rect_points[j], rect_points[(j+1)%4],
@@ -682,6 +715,13 @@ print_point(Point& p, int& i)
 }
 
 void
+print_point(Point2f& p, int& i)
+{
+    cout << "Point " << i << " (" << p.x;
+    cout << ", " << p.y << ")";// << endl;
+}
+
+void
 print_axe(Axe& a)
 {
     int x1 = a.p1_.x;
@@ -755,5 +795,92 @@ create_rotated_rect(set<Axe>& s)
     return (res);
 }
 
+//RotatedRect
+//create_rotatedrect(vector<RotatedRect>& rects)
+//{
+    //vector<Point2f> _0s;
+    //vector<Point2f> _1s;
+    //vector<Point2f> _2s;
+    //vector<Point2f> _3s;
+
+    //for (RotatedRect r : rects)
+    //{
+	//Point2f rect_points[4];
+	//r.points(rect_points);
+
+	//_0s.push_back(rect_points[0]);
+	//_1s.push_back(rect_points[1]);
+	//_2s.push_back(rect_points[2]);
+	//_3s.push_back(rect_points[3]);
+    //}
+
+    //Point2f _0 = _0s[0];
+    //Point2f _1 = _1s[0];
+    //Point2f _2 = _2s[0];
+    //Point2f _3 = _3s[0];
+
+    //for (Point2f p : _0s)
+    //{
+	//if (p.x > _0.x)
+	    //_0 = p;
+    //}
+
+    //for (Point2f p : _1s)
+    //{
+	//if (p.x > _1.x)
+	    //_1 = p;
+    //}
+
+    //for (Point2f p : _2s)
+    //{
+	//if (p.x > _2.x)
+	    //_2 = p;
+    //}
+
+    //for (Point2f p : _3s)
+    //{
+	//if (p.x > _3.x)
+	    //_3 = p;
+    //}
+
+    //Point2f mid((_0.x + _2.x) / 2., (_0.y + _2.y) / 2.);
+    //double width = distance(_0, _1);
+    //width += width * 0.05;
+    //double height = distance(_1 , _2);
+
+    //Point2f p1((_2.x + _3.x) / 2., (_2.y + _3.y) / 2.);
+    //Point2f p2((_0.x + _1.x) / 2., (_0.y + _1.y) / 2.);
+
+    //double angle = pythagore(p1, p2);
+
+    //return (RotatedRect(mid, Size(width, height), angle));
+//}
+
+//double
+//pythagore (Point2f p1, Point2f p2)
+//{
+    //double angle = 0;
+
+    //if (p2.x > p1.x)
+    //{
+	//Point2f p3(p1.x, p2.y);
+	//double hypothenuse = distance(p1, p2);
+	//double adjacent = distance(p2, p3);
+	//angle = -(acos(adjacent / hypothenuse));
+	//angle = angle / CV_PI * 180;
+	//cout << "angle = " << angle << endl;
+    //}
+    //else
+    //{
+	//Point2f p3(p2.x, p1.y);
+	//double hypothenuse = distance(p1, p2);
+	//double adjacent = distance(p2, p3);
+	//angle = acos(adjacent / hypothenuse);
+	//angle = angle / CV_PI * 180;
+	//cout << "angle = " << angle << endl;
+    //}
+
+    //return angle;
+//}
 
 
