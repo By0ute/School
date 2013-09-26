@@ -47,9 +47,12 @@ main (int argc,
     cvMoveWindow(name_trt, 800, 100);
     imshow(name_trt, res);
 
-    namedWindow(name_test, CV_WINDOW_NORMAL);
-    cvMoveWindow(name_test, 100, 300);
-    imshow(name_test, test);
+    if (test.size().width > 0 && test.size().height > 0)
+    {
+	namedWindow(name_test, CV_WINDOW_NORMAL);
+	cvMoveWindow(name_test, 100, 300);
+	imshow(name_test, test);
+    }
 
 
     waitKey(0);

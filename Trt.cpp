@@ -215,6 +215,7 @@ Trt::axes_bounding()
     }
 
     set_axes(axes);
+
     return mat_res;
 }
 
@@ -276,8 +277,8 @@ Trt::find_friends()
 		int dist1 = distance(p1_1, p2_1);
 		int dist2 = distance(p1_2, p2_2);
 
-		if ((abs(dist1 - dist2) <= 20) &&
-		    ((dist1 <= 50) || (dist2 <= 50)))
+		if ((abs(dist1 - dist2) <= 40) &&
+		    ((dist1 <= 40) || (dist2 <= 80)))
 		    tmp.insert(axes_[j]);
 
 		// check distance diago
@@ -404,54 +405,59 @@ Trt::print_results(Mat& src, Mat& Cropped)
 
     for (RotatedRect r : rects_)
     {
-	Point2f rect_points[4];
-	r.points(rect_points);
-
-	Point p(rect_points[2].x,
-		rect_points[2].y +
-		((rect_points[1].y - rect_points[2].y) / 3 * 2));
-
-	//vector<int> res = extract_deskew(r, Cropped);
-	vector<int> res = extract_deskew(r, Cropped);
-	vector<int>::iterator it = res.begin();
-
-	string text = "";
-
-	for (int i = 0; i < res.size(); i++)
+	if (r.size.width > 1 && r.size.height > 1)
 	{
-	    ostringstream oss;
-	    oss << res[i];
-	    text += oss.str();
+	    Point2f rect_points[4];
+	    r.points(rect_points);
+
+	    Point p(rect_points[2].x,
+		    rect_points[2].y +
+		    ((rect_points[1].y - rect_points[2].y) / 3 * 2));
+
+	    //vector<int> res = extract_deskew(r, Cropped);
+
+	    //cout << "width = " << r.size.width;
+	    //cout << " height = " << r.size.height << endl;
+
+
+	    vector<int> res = extract_deskew(r, Cropped);
+	    vector<int>::iterator it = res.begin();
+
+	    string text = "";
+
+	    for (int i = 0; i < res.size(); i++)
+	    {
+		ostringstream oss;
+		oss << res[i];
+		text += oss.str();
+	    }
+
+	    cout << "Decode : " << text << endl;
+
+
+	    for (it = res.begin(); it != res.end(); it++)
+	    {
+		if (*it == -1)
+		    break;
+	    }
+
+	    if (it == res.end())
+	    {
+		// draw bounding box
+		for (int j = 0; j < 4; j++)
+		    line(src, rect_points[j], rect_points[(j+1)%4],
+			 GREEN, 10, 8);
+
+		putText(src, text, p, fontFace, fontScale,
+			GREEN, thickness, 8);
+	    }
+	    else
+	    {
+		for (int j = 0; j < 4; j++)
+		    line(src, rect_points[j], rect_points[(j+1)%4],
+			 RED, 10, 8);
+	    }
 	}
-
-	cout << "Decode : " << text << endl;
-
-
-	for (it = res.begin(); it != res.end(); it++)
-	{
-	    if (*it == -1)
-		break;
-	}
-
-	if (it == res.end())
-	{
-	    // draw bounding box
-	    for (int j = 0; j < 4; j++)
-		line(src, rect_points[j], rect_points[(j+1)%4],
-		     GREEN, 10, 8);
-
-
-
-	    putText(src, text, p, fontFace, fontScale,
-		    GREEN, thickness, 8);
-	}
-	else
-	{
-	    for (int j = 0; j < 4; j++)
-		line(src, rect_points[j], rect_points[(j+1)%4],
-		     RED, 10, 8);
-	}
-
     }
 
     return src;
