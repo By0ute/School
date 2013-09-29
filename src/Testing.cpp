@@ -31,7 +31,10 @@ namespace Testing
 	    writeFinalFile(filenameTest, filename, score, decision);
 	}
 	else
-	  cerr << "Error: The model for " << filename << " has not been found." << endl;
+	{
+	    cerr << "Error: The model for " << filename;
+	    cerr << " has not been found." << endl;
+	}
     }
 
     double distance(Sign* s1, Sign* s2)

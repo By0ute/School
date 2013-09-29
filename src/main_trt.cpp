@@ -6,12 +6,12 @@ using namespace Testing;
 int
 main(int argc, char** argv)
 {
-    cout << "MAIN TREATMENT" << endl;
+    cout << "TESTING DATAS" << endl;
     cout << "--------------" << endl;
 
     if (argc < 2)
     {
-	cerr << "Usage: " << argv[0] << " <test filename>" << endl;
+        cout << "[Usage] : " << argv[0] << " <test_filename.ext>" << endl;
 	return -1;
     }
 

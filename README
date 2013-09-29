@@ -6,5 +6,16 @@
 > cd build/
 > cmake ..
 > make
-> ./App #(1st binary)
-> ./Trt #(2nd binary)
+> ./LEARNING #(1st binary)
+> ./TEST #(2nd binary)
+
+
+# to test
+> ./LEARNING ../train.lsp
+> ./TEST ../test.lsp
+> cat score.txt
+
+# test Reda
+> ./LEARNING ../train_reda.txt
+> ./TEST ../test_reda.txt
+> cat score.txt

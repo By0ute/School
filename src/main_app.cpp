@@ -6,12 +6,12 @@ using namespace Learning;
 int
 main(int argc, char** argv)
 {
-    cout << "MAIN APPRENTISSAGE" << endl;
+    cout << "LEARNING DATAS" << endl;
     cout << "------------------" << endl;
 
     if (argc < 2)
     {
-        cout << "[Usage] : " << argv[0] << " {filename}.txt" << endl;
+        cout << "[Usage] : " << argv[0] << " <learning_filename.ext>" << endl;
         return -1;
     }
 
