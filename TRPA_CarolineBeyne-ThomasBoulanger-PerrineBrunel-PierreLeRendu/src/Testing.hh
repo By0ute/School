@@ -11,7 +11,7 @@
 # include "Parseur.hh"
 
 # define PNORM 0.2
-# define THRESHOLD_ACCEPTATION -33
+# define THRESHOLD_ACCEPTATION -34
 
 namespace Testing
 {
