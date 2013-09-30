@@ -1,2 +1,2 @@
 file1.txt Bernard
-file2.txt Eudes
+file2.txt Pierre
