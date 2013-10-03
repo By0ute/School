@@ -58,6 +58,7 @@ Sign::add_data(VecParam v)
    datas_.push_back(v);
 }
 
+/*
 int
 Sign::find_tmin()
 {
@@ -91,28 +92,27 @@ Sign::find_tmax()
 
     return tmax;
 }
+*/
 
 void
 Sign::normalize()
 {
-  int time_min = find_tmin();
-  int time_max = find_tmax();
-  int duration = time_max - time_min;
-  double slice = (duration / NORMA_SIZE);
-
+  int slice_size = datas_.size() / NORMA_SIZE;
   vector<list<VecParam> > slices(NORMA_SIZE);
 
   // split the list of entries into NORMA_SIZE sublists
   list<VecParam>::iterator it;
+  int k = 0;
   for (it = datas_.begin(); it != datas_.end(); it++)
   {
     VecParam elt = (*it);
-    int timeStamp = elt.get_timeStamp();
-    int index = (timeStamp - time_min) / slice;
+    int index = k / slice_size;
     if (index >= NORMA_SIZE)
-      index--;
+      index = NORMA_SIZE - 1;
 
     slices[index].push_back(elt);
+
+    k++;
   }
 
   // normalize each VecParam and update datas_
@@ -122,8 +122,11 @@ Sign::normalize()
     int slice_size = slices[i].size();
     if (slice_size == 0)
     {
+      /*
       VecParam v;
       datas_.push_back(v);
+      */
+      cerr << "Error: Sign.normalize(): no vector in slice." << endl;
     }
     else
       datas_.push_back(norma_vect(slices[i]));
