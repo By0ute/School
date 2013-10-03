@@ -12,6 +12,7 @@
 
 # define PNORM 0.2
 # define THRESHOLD_ACCEPTATION -34
+# define MULTIPLICATOR 100
 
 namespace Testing
 {

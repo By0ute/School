@@ -94,18 +94,40 @@ Sign::find_tmax()
 }
 */
 
+list<VecParam>&
+Sign::get_pen_down()
+{
+  list<VecParam>& result = *(new list<VecParam>());
+
+  list<VecParam>::iterator it;
+  for (it = datas_.begin(); it != datas_.end(); ++it)
+  {
+    VecParam elt = (*it);
+    if (elt.get_position() == 1)
+      result.push_back(elt);
+  }
+
+  return result;
+}
+
 void
 Sign::normalize()
 {
-  int slice_size = datas_.size() / NORMA_SIZE;
+  /* WARNING: ONLY CONSIDERS PEN DOWN POINTS
+  auto datas = get_pen_down();
+  //*/
+  auto datas = datas_;
+  //*/
+  int slice_size = datas.size() / NORMA_SIZE;
   vector<list<VecParam> > slices(NORMA_SIZE);
 
   // split the list of entries into NORMA_SIZE sublists
   list<VecParam>::iterator it;
   int k = 0;
-  for (it = datas_.begin(); it != datas_.end(); it++)
+  for (it = datas.begin(); it != datas.end(); it++)
   {
     VecParam elt = (*it);
+
     int index = k / slice_size;
     if (index >= NORMA_SIZE)
       index = NORMA_SIZE - 1;

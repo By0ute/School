@@ -61,6 +61,16 @@ Model::Model(id_type id, Signatures& signatures)
 	sum_vects.push_back(sum_vect);
     }
 
+    /* WARNING: ONLY CONSIDERS SOME PARAMETERS
+    list<VecParam>::iterator it_vect;
+    for (it_vect = sum_vects.begin(); it_vect != sum_vects.end(); ++it_vect)
+    {
+      (*it_vect).set_position(1);
+      (*it_vect).set_azimut(0);
+      (*it_vect).set_altitude(0);
+    }
+    //*/
+
     // create model signature from list of vectors
     ref_sign_ = Sign(sum_vects, id);
 }
