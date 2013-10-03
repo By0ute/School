@@ -1,9 +1,2 @@
-* Extract datas from input files
-* Make signatures from input datas
-* Normalize it
-* Make model with Base
-* Extract test datas from input
-* Normalize it
-* Distance between test and model_of_Base
-* Check res
-* Conclude
+* Be sure about FAR and FRR
+* Review slides

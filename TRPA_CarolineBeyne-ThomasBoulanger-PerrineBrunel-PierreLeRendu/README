@@ -29,3 +29,7 @@ CMake needed
 > ./TEST <test_file.txt>
 > cat score.txt
 
+
+[BACK UP]
+You can find in build/ dir
+./LEARNING and ./TEST ready to use
