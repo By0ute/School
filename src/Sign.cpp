@@ -94,6 +94,90 @@ Sign::find_tmax()
 }
 */
 
+vector<int>&
+Sign::calculate_moyennes()
+{
+  vector<int> moyennes;
+
+  // sum values
+  list<VecParam>::iterator it;
+  for (it = datas_.begin(); it != datas_.end(); ++it)
+  {
+    auto elt = (*it).get_vector_params();
+    for (int i = 0; i < elt.size(); i++)
+    {
+      if (i >= moyennes.size())
+	moyennes.push_back(elt[i]);
+      else
+	moyennes[i] += elt[i];
+    }
+  }
+
+  // divide by size
+  for (int i = 0; i < moyennes.size(); i++)
+    moyennes[i] /= datas_.size();
+
+  return moyennes;
+}
+
+vector<int>&
+Sign::calculate_variances()
+{
+  auto moyennes = calculate_moyennes();
+  vector<int> variances;
+
+  // sum
+  list<VecParam>::iterator it;
+  for (it = datas_.begin(); it != datas_.end(); ++it)
+  {
+    auto elt = (*it).get_vector_params();
+    for (int i = 0; i < elt.size(); i++)
+    {
+      auto value = (elt[i] - moyennes[i]);
+      auto squared = (value * value);
+      if (i >= variances.size())
+	variances.push_back(squared);
+      else
+	variances[i] += squared;
+    }
+  }
+
+  // divide by size
+  for (int i = 0; i < variances.size(); i++)
+    variances[i] /= datas_.size();
+
+  return variances;
+}
+
+int
+Sign::calculate_cov_x_y()
+{
+  list<VecParam>::iterator it;
+
+  // calculate E(X) and E(Y)
+  int esperance_x = 0;
+  int esperance_y = 0;
+  for (it = datas_.begin(); it != datas_.end(); ++it)
+  {
+    auto elt = (*it);
+    esperance_x += elt.get_x();
+    esperance_y += elt.get_y();
+  }
+  esperance_x /= datas_.size();
+  esperance_y /= datas_.size();
+
+  // calculate cov(X, Y) = E((X - E(X)) * (Y - E(Y)))
+  int cov_x_y = 0;
+  for (it = datas_.begin(); it != datas_.end(); ++it)
+  {
+    auto elt = (*it);
+    cov_x_y += ((elt.get_x() - esperance_x) * (elt.get_y() - esperance_y));
+  }
+  cov_x_y /= datas_.size();
+
+  return cov_x_y;
+}
+
 list<VecParam>&
 Sign::get_pen_down()
 {

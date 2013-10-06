@@ -9,7 +9,7 @@
 # include <map>
 # include <set>
 
-# define NORMA_SIZE 25
+# define NORMA_SIZE 50
 
 using namespace std;
 
@@ -37,6 +37,9 @@ class Sign
 	void normalize();
 	int find_tmin();
 	int find_tmax();
+        vector<int>& calculate_moyennes();
+        vector<int>& calculate_variances();
+        int calculate_cov_x_y();
         list<VecParam>& get_pen_down();
 	VecParam norma_vect(list<VecParam>& list_v);
 	void print();
