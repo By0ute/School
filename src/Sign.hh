@@ -9,7 +9,7 @@
 # include <map>
 # include <set>
 
-# define NORMA_SIZE 50
+# define NORMA_SIZE 30
 
 using namespace std;
 
