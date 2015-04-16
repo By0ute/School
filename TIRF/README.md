@@ -3,10 +3,10 @@
 ## Coded with
 * C++
 * [**OpenCV**](http://opencv.org/)
-* CMake
+* [**CMake**](http://www.cmake.org/)
 
 ## Configuration
-* Tested on Ubuntu 12.04
+* Tested on [**Ubuntu 12.04**](http://www.ubuntu.com/)
 
 ## How to Compile ?
 ```
@@ -25,5 +25,5 @@ cd build/
 ```
 
 ## Examples
-![Barcode]()
-![No BarCode]()
+![Barcode](https://github.com/By0ute/School/blob/master/TIRF/pic/bread_code.png)
+![No BarCode](https://github.com/By0ute/School/blob/master/TIRF/pic/tube_nocode.png)
