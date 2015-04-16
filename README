@@ -1,0 +1,31 @@
+[---- INSTRUCTIONS ----]
+
+[CONFIGURATION]
+Tested on Ubuntu 12.04
+Not tested on Debian
+
+Language : C++
+
+CMake needed
+
+
+[TO COMPILE]
+* Need cmake
+* Instructions :
+> cd folder_of_trpa_project/
+> mkdir build
+> cd build/
+> cmake ..
+> make
+
+[BINARIES]
+* Learning mode : ./LEARNING
+* Test mode : ./TEST
+
+[HOW TO USE THE PROGRAM]
+> cd folder_of_trpa_project/
+> cd build/
+> ./LEARNING <learning_file.txt>
+> ./TEST <test_file.txt>
+> cat score.txt
+

@@ -1,0 +1,56 @@
+U1 sample/USER5_1.txt
+U2 sample/USER5_2.txt
+U3 sample/USER5_3.txt
+U4 sample/USER5_4.txt
+U5 sample/USER5_5.txt
+U6 sample/USER5_6.txt
+U7 sample/USER5_7.txt
+U8 sample/USER5_8.txt
+U9 sample/USER5_9.txt
+U10 sample/USER5_10.txt
+U11 sample/USER5_11.txt
+U12 sample/USER5_12.txt
+U13 sample/USER5_13.txt
+U14 sample/USER5_14.txt
+U15 sample/USER5_15.txt
+U16 sample/USER5_16.txt
+U17 sample/USER5_17.txt
+U18 sample/USER5_18.txt
+U19 sample/USER5_19.txt
+U20 sample/USER5_20.txt
+U21 sample/USER5_21.txt
+U22 sample/USER5_22.txt
+U23 sample/USER5_23.txt
+U24 sample/USER5_24.txt
+U25 sample/USER5_25.txt
+U26 sample/USER5_26.txt
+U27 sample/USER5_27.txt
+U28 sample/USER5_28.txt
+U29 sample/USER5_29.txt
+U30 sample/USER5_30.txt
+U31 sample/USER5_31.txt
+U32 sample/USER5_32.txt
+U33 sample/USER5_33.txt
+U34 sample/USER5_34.txt
+U35 sample/USER5_35.txt
+U36 sample/USER5_36.txt
+U37 sample/USER5_37.txt
+U38 sample/USER5_38.txt
+U39 sample/USER5_39.txt
+U40 sample/USER5_40.txt
+U1-4 sample/USER5_1.txt sample/USER5_2.txt sample/USER5_3.txt sample/USER5_4.txt
+U5-8 sample/USER5_5.txt sample/USER5_6.txt sample/USER5_7.txt sample/USER5_8.txt
+U9-12 sample/USER5_9.txt sample/USER5_10.txt sample/USER5_11.txt sample/USER5_12.txt
+U13-16 sample/USER5_13.txt sample/USER5_14.txt sample/USER5_15.txt sample/USER5_16.txt
+U17-20 sample/USER5_17.txt sample/USER5_18.txt sample/USER5_19.txt sample/USER5_20.txt
+U21-24 sample/USER5_21.txt sample/USER5_22.txt sample/USER5_23.txt sample/USER5_24.txt
+U25-28 sample/USER5_25.txt sample/USER5_26.txt sample/USER5_27.txt sample/USER5_28.txt
+U29-32 sample/USER5_29.txt sample/USER5_30.txt sample/USER5_31.txt sample/USER5_32.txt
+U33-36 sample/USER5_33.txt sample/USER5_34.txt sample/USER5_35.txt sample/USER5_36.txt
+U37-40 sample/USER5_37.txt sample/USER5_38.txt sample/USER5_39.txt sample/USER5_40.txt
+U1-8 sample/USER5_1.txt sample/USER5_2.txt sample/USER5_3.txt sample/USER5_4.txt sample/USER5_5.txt sample/USER5_6.txt sample/USER5_7.txt sample/USER5_8.txt
+U9-16 sample/USER5_9.txt sample/USER5_10.txt sample/USER5_11.txt sample/USER5_12.txt sample/USER5_13.txt sample/USER5_14.txt sample/USER5_15.txt sample/USER5_16.txt
+U13-20 sample/USER5_13.txt sample/USER5_14.txt sample/USER5_15.txt sample/USER5_16.txt sample/USER5_17.txt sample/USER5_18.txt sample/USER5_19.txt sample/USER5_20.txt
+U21-28 sample/USER5_21.txt sample/USER5_22.txt sample/USER5_23.txt sample/USER5_24.txt sample/USER5_25.txt sample/USER5_26.txt sample/USER5_27.txt sample/USER5_28.txt
+U29-36 sample/USER5_29.txt sample/USER5_30.txt sample/USER5_31.txt sample/USER5_32.txt sample/USER5_33.txt sample/USER5_34.txt sample/USER5_35.txt sample/USER5_36.txt
+U33-40 sample/USER5_33.txt sample/USER5_34.txt sample/USER5_35.txt sample/USER5_36.txt sample/USER5_37.txt sample/USER5_38.txt sample/USER5_39.txt sample/USER5_40.txt
