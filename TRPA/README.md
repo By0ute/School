@@ -10,18 +10,18 @@
 
 ## How to Compile ?
 ```
-**cd** TRPA/
-**mkdir** build
-**cd** build/
-**cmake** ..
-**make**
+cd TRPA/
+mkdir build
+cd build/
+cmake ..
+make
 ```
 
 ## Launch **TEST SUITE**
 ```
-**cd** TRPA/
-**cd** build/
+cd TRPA/
+cd build/
 ./LEARNING ../samples/<train.txt>
 ./TEST ../samples/<test.txt>
-**cat** score.txt
+cat score.txt
 ```
