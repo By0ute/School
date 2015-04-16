@@ -1,0 +1,7 @@
+R1 class_samples/Reda_27092013_103517.txt
+R2 class_samples/Reda_27092013_103529.txt
+R3 class_samples/Reda_27092013_103547.txt
+R4 class_samples/Reda_27092013_103517.txt class_samples/Reda_27092013_103529.txt
+R5 class_samples/Reda_27092013_103517.txt class_samples/Reda_27092013_103547.txt
+R6 class_samples/Reda_27092013_103529.txt class_samples/Reda_27092013_103547.txt
+R7 class_samples/Reda_27092013_103517.txt class_samples/Reda_27092013_103529.txt class_samples/Reda_27092013_103547.txt
